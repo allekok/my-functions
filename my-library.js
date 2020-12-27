@@ -7,7 +7,7 @@ function $(str) {
 }
 
 function reverse_string(str) {
-	revStr = ''
+	let revStr = ''
 	for(let i = str.length - 1; str[i] !== undefined; i--)
 		revStr += str[i]
 	return revStr
