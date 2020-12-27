@@ -83,22 +83,10 @@
 		 ]
 		 
 		 init_result()
-
+		 
 		 input.addEventListener("keyup", e => {
 			 if(e.ctrlKey && e.key == "Enter") {
-				 if((history[history.length - 1] != input.value) &&
-				    input.value.trim()) {
-					 history.push(input.value)
-					 history_pointer = history.length - 1
-				 }
-
-				 try {
-					 append_to_result(input.value + '<br>=> ' +
-							  eval(input.value))
-				 }
-				 catch (e) {
-					 append_to_result(input.value + '<br>=> ' + e)
-				 }
+				 execute()
 			 }
 			 else if(e.ctrlKey && e.key == "ArrowDown") {
 				 if((history_pointer < (history.length - 1)) &&
@@ -114,6 +102,22 @@
 				 // input.value += doubleChars[idx]
 			 }
 		 })
+
+		 function execute() {
+			 if((history[history.length - 1] != input.value) &&
+			    input.value.trim()) {
+				 history.push(input.value)
+				 history_pointer = history.length - 1
+			 }
+
+			 try {
+				 append_to_result(input.value + '<br>=> ' +
+						  eval(input.value))
+			 }
+			 catch (e) {
+				 append_to_result(input.value + '<br>=> ' + e)
+			 }
+		 }
 
 		 function clear() {
 			 result.innerHTML = ''
