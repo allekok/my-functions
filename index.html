@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>My Computer</title>
+		<style>
+		 @font-face {
+			 font-family:'SourceCodeProBold';
+			 src:url('./SourceCodePro-Bold.otf') format('opentype')
+		 }
+		 html {
+			 height:100%;
+		 }
+		 body {
+			 margin:0;
+			 height:100%;
+			 font-family:'SourceCodeProBold', monospace;
+			 font-size:14px;
+			 background:#eee;
+			 color:#222;
+			 font-weight:bold;
+		 }
+		 #shell {
+			 display:flex;
+			 flex-direction:column;
+			 height:100%;
+		 }
+		 #result {
+			 height:100%;
+			 overflow:auto;
+			 word-break:break-word;
+		 }
+		 #result p {
+			 margin:0;
+			 padding:.5em;
+			 border-top:1px solid
+		 }
+		 #input {
+			 -webkit-appearance:none;
+			 outline:0;
+			 border-radius:0;
+			 box-shadow:none;
+			 border:0;
+			 background:none;
+			 color:inherit;
+			 border-top:1px solid;
+			 padding:.5em;
+			 font-family:inherit;
+			 font-size:1.1em;
+			 font-weight:inherit;
+			 max-width:100%;
+			 min-width:100%;
+			 height:10em;
+			 box-sizing:border-box;
+		 }
+		 #input:focus {
+			 border:0;
+			 box-shadow:none;
+			 border-top:2px solid;
+		 }
+		</style>
+	</head>
+	<body>
+		<div id="shell">
+			<div id="result"></div>
+			<textarea id="input" placeholder=">"></textarea>
+		</div>
+
+		<script src="my-library-functions.js"></script>
+		<script src="my-library.js"></script>
+		<script>
+		 const input = document.querySelector("#input")
+		 const result = document.querySelector("#result")
+
+		 let history = [""]
+		 let history_pointer = 0
+		 
+		 let nth = 0
+
+		 const doubleChars = [
+			 "'", "\"", "[", "{", "(", "<",
+		 ]
+		 
+		 init_result()
+
+		 input.addEventListener("keyup", e => {
+			 if(e.ctrlKey && e.key == "Enter") {
+				 if((history[history.length - 1] != input.value) &&
+				    input.value.trim()) {
+					 history.push(input.value)
+					 history_pointer = history.length - 1
+				 }
+
+				 try {
+					 append_to_result(input.value + '<br>=> ' +
+							  eval(input.value))
+				 }
+				 catch (e) {
+					 append_to_result(input.value + '<br>=> ' + e)
+				 }
+			 }
+			 else if(e.ctrlKey && e.key == "ArrowDown") {
+				 if((history_pointer < (history.length - 1)) &&
+				    history_pointer > -1)
+					 input.value = history[history_pointer++]
+			 }
+			 else if(e.ctrlKey && e.key == "ArrowUp") {
+				 if((history_pointer > 0) &&
+				    history_pointer < history.length)
+					 input.value = history[history_pointer--]
+			 }
+			 else if((idx = doubleChars.indexOf(e.key)) !== -1) {
+				 // input.value += doubleChars[idx]
+			 }
+		 })
+
+		 function clear() {
+			 result.innerHTML = ''
+			 append_to_result("Functions:<br>" + my_library_functions.join("<br>"))
+			 append_to_result("<br>[Ctrl+Enter]: Execution<br>[Ctrl+Up]: Going backward in history<br>[Ctrl+Down]: Going foreward in history<br>[Finding a function]: \"$('a subset of function's prototype')\" function.<br>[Clear screen]: clear()")
+			 input.focus()
+		 }
+		 
+		 function init_result() {
+			 clear()
+		 }
+		 
+		 function append_to_result(str) {
+			 result.innerHTML += `<p>[${nth}] ${str}</p>`
+			 result.scrollTo(0, result.scrollHeight)
+			 nth++
+		 }
+		</script>
+	</body>
+</html>
