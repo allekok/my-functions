@@ -1,7 +1,7 @@
 const my_library_functions = [
 	'$(str)',
 	'add_matrices(A, B)',
-	'apply_proc_to_elements_of_matrix(proc, A)',
+	'apply_proc_to_matrix_elements(proc, A)',
 	'apply_proc_to_same_elements_of_matrices(proc, A, B)',
 	'base_n_to_decimal(x, n)',
 	'binary_to_decimal(bin)',

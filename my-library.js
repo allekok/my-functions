@@ -139,7 +139,7 @@ function matrix_to_string(A) {
 	return string
 }
 
-function apply_proc_to_elements_of_matrix(proc, A) {
+function apply_proc_to_matrix_elements(proc, A) {
 	for(const i in A)
 		for(const j in A[i])
 			A[i][j] = proc(i, j, A[i][j])
@@ -147,7 +147,7 @@ function apply_proc_to_elements_of_matrix(proc, A) {
 }
 
 function apply_proc_to_same_elements_of_matrices(proc, A, B) {
-	return apply_proc_to_elements_of_matrix((i,j,a) => proc(a, B[i][j]), A)
+	return apply_proc_to_matrix_elements((i,j,a) => proc(a, B[i][j]), A)
 }
 
 function add_matrices(A, B) {
@@ -166,7 +166,7 @@ function multiply_matrix(A, x) {
 }
 
 function multiply_matrix_by_scalar(A, n) {
-	return apply_proc_to_elements_of_matrix((i,j,a) => a*n, A)
+	return apply_proc_to_matrix_elements((i,j,a) => a*n, A)
 }
 
 function multiply_matrices(A, B) {
