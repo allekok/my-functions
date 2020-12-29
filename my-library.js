@@ -128,3 +128,61 @@ function decimal_to_bcd(num, num_of_bits=8) {
 function decimal_to_packed_bcd(num) {
 	return decimal_to_bcd(num, 4)
 }
+
+function matrix_to_string(A) {
+	let string = '\n'
+	for(const i in A) {
+		for(const j in A[i])
+			string += `${A[i][j]}\t`
+		string += '\n'
+	}
+	return string
+}
+
+function apply_proc_to_elements_of_matrix(proc, A) {
+	for(const i in A)
+		for(const j in A[i])
+			A[i][j] = proc(i, j, A[i][j])
+	return A
+}
+
+function apply_proc_to_same_elements_of_matrices(proc, A, B) {
+	return apply_proc_to_elements_of_matrix((i,j,a) => proc(a, B[i][j]), A)
+}
+
+function add_matrices(A, B) {
+	return apply_proc_to_same_elements_of_matrices((a,b) => a+b, A, B)
+}
+
+function subtract_matrices(A, B) {
+	return apply_proc_to_same_elements_of_matrices((a,b) => a-b, A, B)
+}
+
+function multiply_matrix(A, x) {
+	if(typeof(x) != 'object')
+		return multiply_matrix_by_scalar(A, x)
+	else
+		return multiply_matrices(A, x)
+}
+
+function multiply_matrix_by_scalar(A, n) {
+	return apply_proc_to_elements_of_matrix((i,j,a) => a*n, A)
+}
+
+function multiply_matrices(A, B) {
+	if(A[0].length != B.length)
+		return `Can't be done.
+# of columns(${A[0].length}) of A != # of rows(${B.length}) of B`
+
+	let C = []
+	for(const i in A) {
+		C[i] = []
+		for(const j in B[i]) {
+			C[i][j] = 0
+			for(const k in A[i]) {
+				C[i][j] += A[i][k] * B[k][j]
+			}
+		}
+	}
+	return C
+}
