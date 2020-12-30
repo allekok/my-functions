@@ -1,8 +1,8 @@
 function $(str) {
-	let result = []
+	let result = '\n'
 	for(const f of my_library_functions)
 		if(f.indexOf(str) !== -1)
-			result.push(f)
+			result += `${f}\n`
 	return result
 }
 
