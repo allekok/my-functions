@@ -156,6 +156,15 @@ function matrix_to_string(A) {
 	return string
 }
 
+function string_to_matrix(str) {
+	str = str.trim()
+	str = str.replace(/\n+/g, '\n')
+	str = str.replace(/[ \t]+/g, ' ')
+	let C = str.split('\n')
+	C = C.map(r => r.split(' '))
+	return C
+}
+
 function apply_proc_to_matrix_elements(proc, A) {
 	let C = []
 	for(const i in A) {

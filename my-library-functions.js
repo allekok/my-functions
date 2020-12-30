@@ -41,6 +41,7 @@ const my_library_functions = [
 	'parallel_resistors_equivalent(resistors)',
 	'reverse_string(str)',
 	'series_resistors_equivalent(resistors)',
+	'string_to_matrix(str)',
 	'subtract_matrices(A, B)',
 	'sum(f, numbers)',
 	'zero_matrix(rows, columns)',
