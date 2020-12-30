@@ -148,8 +148,9 @@
 
 		 function clear() {
 			 result.innerHTML = ''
-			 append_to_result("Functions:<br>" + my_library_functions.join("<br>"))
-			 append_to_result("<br>[Ctrl+Enter]: Execution<br>[Ctrl+Up]: Going backward in history<br>[Ctrl+Down]: Going foreward in history<br>[Finding a function]: \"$('a subset of function's prototype')\"<br>[Clear screen]: clear()")
+			 append_to_result(`Functions[${my_library_functions.length}]:\n` + my_library_functions.join("\n"))
+			 append_to_result("\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Finding a function]: \"$('a subset of function's prototype')\"\n[Clear screen]: clear()")
+			 result.scrollTo(0,0)
 			 input.focus()
 		 }
 		 
