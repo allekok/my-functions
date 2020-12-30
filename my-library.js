@@ -129,6 +129,23 @@ function decimal_to_packed_bcd(num) {
 	return decimal_to_bcd(num, 4)
 }
 
+function is_matrix(A) {
+	if(typeof(A) != 'object')
+		return false
+	if(A.length <= 0)
+		return false
+
+	const length = A[0].length
+	
+	for(let i = 0; i < A.length; i++) {
+		if(typeof(A[i]) != 'object')
+			return false
+		if(A[i].length != length)
+			return false
+	}
+	return true
+}
+
 function matrix_to_string(A) {
 	let string = '\n'
 	for(const i in A) {
@@ -140,10 +157,13 @@ function matrix_to_string(A) {
 }
 
 function apply_proc_to_matrix_elements(proc, A) {
-	for(const i in A)
+	let C = []
+	for(const i in A) {
+		C[i] = []
 		for(const j in A[i])
-			A[i][j] = proc(i, j, A[i][j])
-	return A
+			C[i][j] = proc(i, j, A[i][j])
+	}
+	return C
 }
 
 function apply_proc_to_same_elements_of_matrices(proc, A, B) {
@@ -172,17 +192,100 @@ function multiply_matrix_by_scalar(A, n) {
 function multiply_matrices(A, B) {
 	if(A[0].length != B.length)
 		return `Can't be done.
-# of columns(${A[0].length}) of A != # of rows(${B.length}) of B`
+# of columns[${A[0].length}] of A != # of rows[${B.length}] of B`
 
 	let C = []
 	for(const i in A) {
 		C[i] = []
 		for(const j in B[i]) {
 			C[i][j] = 0
-			for(const k in A[i]) {
+			for(const k in A[i])
 				C[i][j] += A[i][k] * B[k][j]
-			}
 		}
+	}
+	return C
+}
+
+function matrix_transposition(A) {
+	let C = []
+	for(let j = 0; j < A[0].length; j++) {
+		C[j] = []
+		for(const i in A)
+			C[j][i] = A[i][j]
+	}
+	return C
+}
+
+function matrix_main_diagonal(A) {
+	let C = []
+	for(const i in A)
+		for(const j in A)
+			if(i == j)
+				C.push(A[j][j])
+	return C
+}
+
+function matrix_anti_diagonal(A) {
+	let C = []
+	for(const i in A)
+		C.push(A[i][A[i].length-i-1])
+	return C
+}
+
+function is_matrix_square(A) {
+	return is_matrix(A) && A.length == A[0].length
+}
+
+function apply_predicate_to_matrix_elements(false_p, A) {
+	for(const i in A)
+		for(const j in A[i])
+			if(false_p(i, j, A[i][j]))
+				return false
+	return true
+}
+
+function is_matrix_diagonal(A) {
+	return apply_predicate_to_matrix_elements(
+		(i,j,a) => (i != j && a), A)
+}
+
+function is_matrix_top_triangular(A) {
+	return apply_predicate_to_matrix_elements((i,j,a) => (i > j && a), A)
+}
+
+function is_matrix_bottom_triangular(A) {
+	return apply_predicate_to_matrix_elements((i,j,a) => (i < j && a), A)
+}
+
+function is_matrix_zero(A) {
+	return apply_predicate_to_matrix_elements((i,j,a) => a, A)
+}
+
+function is_matrix_identity(A) {
+	return apply_predicate_to_matrix_elements(
+		(i,j,a) => (i != j && a) || (i == j && a != 1), A)
+}
+
+function identity_matrix(rows, columns) {
+	let C = []
+	for(let i = 0; i < rows; i++) {
+		C[i] = []
+		for(let j = 0; j < columns; j++) {
+			if(i == j)
+				C[i][j] = 1
+			else
+				C[i][j] = 0
+		}
+	}
+	return C
+}
+
+function zero_matrix(rows, columns) {
+	let C = []
+	for(let i = 0; i < rows; i++) {
+		C[i] = []
+		for(let j = 0; j < columns; j++)
+			C[i][j] = 0
 	}
 	return C
 }
