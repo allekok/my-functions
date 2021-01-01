@@ -28,6 +28,7 @@ const my_library_functions = [
 	'is_matrix_square(A)',
 	'is_matrix_top_triangular(A)',
 	'is_matrix_zero(A)',
+	'make_matrix(rows, columns, proc)',
 	'matrix_anti_diagonal(A)',
 	'matrix_main_diagonal(A)',
 	'matrix_to_string(A)',

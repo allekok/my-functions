@@ -275,26 +275,23 @@ function is_matrix_identity(A) {
 		(i,j,a) => (i != j && a) || (i == j && a != 1), A)
 }
 
-function identity_matrix(rows, columns) {
-	let C = []
-	for(let i = 0; i < rows; i++) {
-		C[i] = []
-		for(let j = 0; j < columns; j++) {
-			if(i == j)
-				C[i][j] = 1
-			else
-				C[i][j] = 0
-		}
-	}
-	return C
-}
-
-function zero_matrix(rows, columns) {
+function make_matrix(rows, columns, proc) {
 	let C = []
 	for(let i = 0; i < rows; i++) {
 		C[i] = []
 		for(let j = 0; j < columns; j++)
-			C[i][j] = 0
+			C[i][j] = proc(i,j)
 	}
 	return C
+}
+
+function identity_matrix(rows, columns) {
+	return make_matrix(rows, columns, (i,j) => {
+		if(i == j) return 1
+		else       return 0
+	})
+}
+
+function zero_matrix(rows, columns) {
+	return make_matrix(rows, columns, (i,j) => 0)
 }
