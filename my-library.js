@@ -286,10 +286,7 @@ function make_matrix(rows, columns, proc) {
 }
 
 function identity_matrix(rows, columns) {
-	return make_matrix(rows, columns, (i,j) => {
-		if(i == j) return 1
-		else       return 0
-	})
+	return make_matrix(rows, columns, (i,j) => i==j ? 1 : 0)
 }
 
 function zero_matrix(rows, columns) {
