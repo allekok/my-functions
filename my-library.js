@@ -292,3 +292,38 @@ function identity_matrix(rows, columns) {
 function zero_matrix(rows, columns) {
 	return make_matrix(rows, columns, (i,j) => 0)
 }
+
+function solve_quadratic_equation(a, b, c) {
+	const delta = (b * b) - (4 * a * c)
+	let roots = {delta: delta}
+	if(delta >= 0) {
+		let xp = (-b + Math.sqrt(delta)) / (2 * a)
+		let xm = (-b - Math.sqrt(delta)) / (2 * a)
+		roots['x+'] = xp
+		roots['x-'] = xm
+
+		xp = Number(xp.toFixed(2))
+		xm = Number(xm.toFixed(2))
+		xp = -xp
+		xm = -xm
+		if(xp > 0) xp = `+${xp}`
+		if(xm > 0) xm = `+${xm}`
+		roots['factorization'] = `(x${xp})(x${xm})`
+	}
+	return roots
+}
+
+function object_to_string(obj, level=0) {
+	const tab = '\t'.repeat(level)
+	let str = `\n${tab}{\n`
+	
+	for(const key in obj) {
+		value = obj[key]
+		if(typeof(value) == 'object')
+			str += `${tab}\t${key}: ${object_to_string(value,1+level)}\n`
+		else
+			str += `${tab}\t${key}: ${value}\n`
+	}
+	str += `${tab}}`
+	return str
+}
