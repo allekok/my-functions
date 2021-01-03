@@ -302,12 +302,10 @@ function solve_quadratic_equation(a, b, c) {
 		roots['x+'] = xp
 		roots['x-'] = xm
 
-		xp = Number(xp.toFixed(2))
-		xm = Number(xm.toFixed(2))
-		xp = -xp
-		xm = -xm
-		if(xp > 0) xp = `+${xp}`
-		if(xm > 0) xm = `+${xm}`
+		xp = (-xp).toFixed(2)
+		xm = (-xm).toFixed(2)
+		if(xp[0] != '-') xp = `+${xp}`
+		if(xm[0] != '-') xm = `+${xm}`
 		roots['factorization'] = `(x${xp})(x${xm})`
 	}
 	return roots
