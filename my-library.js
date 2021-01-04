@@ -156,6 +156,14 @@ function matrix_to_string(A) {
 	return string
 }
 
+function matrices_to_string(As) {
+	let string = '\n'
+	for(const i in As) {
+		string += `${i}:${matrix_to_string(As[i])}\n\n`
+	}
+	return string
+}
+
 function string_to_matrix(str) {
 	str = str.trim()
 	str = str.replace(/\n+/g, '\n')
@@ -253,6 +261,18 @@ function apply_predicate_to_matrix_elements(false_p, A) {
 	return true
 }
 
+function is_matrix_symmetric(A) {
+	const A_t = matrix_transposition(A)
+	return apply_predicate_to_matrix_elements(
+		(i,j,a) => a != A_t[i][j], A)
+}
+
+function is_matrix_skew_symmetric(A) {
+	const A_t = matrix_transposition(A)
+	return apply_predicate_to_matrix_elements(
+		(i,j,a) => a != -A_t[i][j], A)
+}
+
 function is_matrix_diagonal(A) {
 	return apply_predicate_to_matrix_elements(
 		(i,j,a) => (i != j && a), A)
@@ -291,6 +311,16 @@ function identity_matrix(rows, columns) {
 
 function zero_matrix(rows, columns) {
 	return make_matrix(rows, columns, (i,j) => 0)
+}
+
+function matrix_as_sum_of_symmetric_and_skew_symmetric_matrices(A) {
+	const A_t = matrix_transposition(A)
+	const sym = multiply_matrix(add_matrices(A,A_t), 0.5)
+	const skew = multiply_matrix(subtract_matrices(A,A_t), 0.5)
+	return {
+		symmetric: sym,
+		skew_symmetric: skew,
+	}
 }
 
 function solve_quadratic_equation(a, b, c) {
