@@ -169,7 +169,7 @@ function string_to_matrix(str) {
 	str = str.replace(/\n+/g, '\n')
 	str = str.replace(/[ \t]+/g, ' ')
 	let C = str.split('\n')
-	C = C.map(r => r.split(' '))
+	C = C.map(r => r.split(' ').map(n => Number(n)))
 	return C
 }
 
