@@ -101,6 +101,13 @@ function sum(f, numbers) {
 	return sum
 }
 
+function product(f, numbers) {
+	let product = 1
+	for(const num of numbers)
+		product *= f(num)
+	return product
+}
+
 function parallel_resistors_equivalent(resistors) {
 	return 1 / sum(n=>1/n, resistors)
 }

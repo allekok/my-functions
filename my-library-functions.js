@@ -45,6 +45,7 @@ const my_library_functions = [
 	'octal_to_decimal(octal)',
 	'octal_to_hexadecimal(octal)',
 	'parallel_resistors_equivalent(resistors)',
+	'product(f, numbers)',
 	'reverse_string(str)',
 	'series_resistors_equivalent(resistors)',
 	'solve_quadratic_equation(a, b, c)',
