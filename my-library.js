@@ -414,3 +414,69 @@ function object_to_string(obj, level=0) {
 	str += `${tab}}`
 	return str
 }
+
+function make_vector(x,y) {
+	return [x,y]
+}
+
+function vector_x(p) {
+	return p[0]
+}
+
+function vector_y(p) {
+	return p[1]
+}
+
+function apply_proc_to_vector_elements(proc, p) {
+	let y = []
+	for(const i in p)
+		y[i] = proc(i, p[i])
+	return y
+}
+
+function apply_proc_to_same_elements_of_vectors(proc, p, q) {
+	return apply_proc_to_vector_elements((i,a) => proc(a,q[i]), p)
+}
+
+function add_vectors(p, q) {
+	return apply_proc_to_same_elements_of_vectors((a,b) => a+b, p, q)
+}
+
+function subtract_vectors(p, q) {
+	return apply_proc_to_same_elements_of_vectors((a,b) => a-b, p, q)
+}
+
+function multiply_vector_by_scalar(p, n) {
+	return apply_proc_to_vector_elements((i,a) => a*n, p)
+}
+
+function vector_length(p) {
+	return Math.sqrt(Math.pow(vector_x(p), 2) +
+			 Math.pow(vector_y(p), 2))
+}
+
+function unit_vector(p) {
+	return multiply_vector_by_scalar(p, 1 / vector_length(p))
+}
+
+function vectors_dot_product(p, q) {
+	return sum(x => x,
+		   apply_proc_to_same_elements_of_vectors((a,b) => a*b, p, q))
+}
+
+function vectors_angle_cos(p, q) {
+	return vectors_dot_product(p,q) / vector_length(p) / vector_length(q)
+}
+
+function vectors_angle(p, q) {
+	return Math.acos(vectors_angle_cos(p,q)) / Math.PI * 180
+}
+
+function are_vectors_orthogonal(p, q) {
+	return 0 == vectors_dot_product(p,q)
+}
+
+function vector_projection(p, q) {
+	return multiply_vector_by_scalar(
+		q, (vectors_dot_product(p,q) / Math.pow(vector_length(q),2)))
+}
