@@ -1,7 +1,13 @@
 function $(str) {
+	function san_data(str) {
+		str = str.trim()
+		str = str.replace(/[\s_\-,\.\?!\*]+/g, '')
+		return str
+	}
+	str = san_data(str)
 	let result = '\n'
 	for(const f of my_library_functions)
-		if(f.indexOf(str) !== -1)
+		if(san_data(f).indexOf(str) !== -1)
 			result += `${f}\n`
 	return result
 }
