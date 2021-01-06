@@ -139,15 +139,15 @@ function decimal_to_packed_bcd(num) {
 function is_matrix(A) {
 	if(typeof(A) != 'object')
 		return false
-	if(A.length <= 0)
+	if(matrix_rows(A) <= 0)
 		return false
 
-	const length = A[0].length
+	const columns = matrix_columns(A)
 	
-	for(let i = 0; i < A.length; i++) {
+	for(let i = 0; i < matrix_rows(A); i++) {
 		if(typeof(A[i]) != 'object')
 			return false
-		if(A[i].length != length)
+		if(matrix_columns(A,i) != columns)
 			return false
 	}
 	return true
@@ -176,8 +176,20 @@ function string_to_matrix(str) {
 	str = str.replace(/\n+/g, '\n')
 	str = str.replace(/[ \t]+/g, ' ')
 	let C = str.split('\n')
-	C = C.map(r => r.split(' ').map(n => Number(n)))
+	C = C.map(r => r.trim().split(' ').map(n => Number(n)))
 	return C
+}
+
+function matrix_rows(A) {
+	return A.length
+}
+
+function matrix_columns(A, i=0) {
+	return A[i].length
+}
+
+function matrix_dimentions(A) {
+	return [matrix_rows(A), matrix_columns(A)]
 }
 
 function apply_proc_to_matrix_elements(proc, A) {
@@ -214,9 +226,9 @@ function multiply_matrix_by_scalar(A, n) {
 }
 
 function multiply_matrices(A, B) {
-	if(A[0].length != B.length)
+	if(matrix_columns(A) != matrix_rows(B))
 		return `Can't be done.
-# of columns[${A[0].length}] of A != # of rows[${B.length}] of B`
+# of columns[${matrix_columns(A)}] of A != # of rows[${matrix_rows(B)}] of B`
 
 	let C = []
 	for(const i in A) {
@@ -232,7 +244,7 @@ function multiply_matrices(A, B) {
 
 function matrix_transposition(A) {
 	let C = []
-	for(let j = 0; j < A[0].length; j++) {
+	for(let j = 0; j < matrix_columns(A); j++) {
 		C[j] = []
 		for(const i in A)
 			C[j][i] = A[i][j]
@@ -252,12 +264,12 @@ function matrix_main_diagonal(A) {
 function matrix_anti_diagonal(A) {
 	let C = []
 	for(const i in A)
-		C.push(A[i][A[i].length-i-1])
+		C.push(A[i][matrix_columns(A,i)-i-1])
 	return C
 }
 
 function is_matrix_square(A) {
-	return is_matrix(A) && A.length == A[0].length
+	return is_matrix(A) && (matrix_rows(A) == matrix_columns(A))
 }
 
 function apply_predicate_to_matrix_elements(false_p, A) {
@@ -327,6 +339,46 @@ function matrix_as_sum_of_symmetric_and_skew_symmetric_matrices(A) {
 	return {
 		symmetric: sym,
 		skew_symmetric: skew,
+	}
+}
+
+function matrix_trace(A) {
+	return sum(x=>x, matrix_main_diagonal(A))
+}
+
+function matrix_remove_row_column(A, r, c) {
+	let C = []
+	for(const i in A) {
+		if(r != i) {
+			let row = []
+			for(const j in A[i])
+				if(j != c) 
+					row.push(A[i][j])
+			C.push(row)
+		}
+	}
+	return C
+}
+
+function matrix_determinant(A) {
+	if(!is_matrix_square(A))
+		return 'Matrix is not square.'
+	if(matrix_rows(A) < 2 || matrix_columns(A) < 2)
+		return 'Matrix is too small.'
+	
+	if(matrix_rows(A) == 2 && matrix_columns(A) == 2) {
+		return product(x=>x, matrix_main_diagonal(A)) -
+			product(x=>x, matrix_anti_diagonal(A))
+	}
+	else {
+		const firstRow = A[0]
+		let det = 0
+		for(const i in firstRow) {
+			const a = i % 2 ? -firstRow[i] : firstRow[i]
+			const B = matrix_remove_row_column(A, 0, i)
+			det += a * matrix_determinant(B)
+		}
+		return det
 	}
 }
 
