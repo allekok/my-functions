@@ -2,6 +2,7 @@ function $(str) {
 	function normalize_data(str) {
 		str = str.trim()
 		str = str.replace(/[\s_\-,\.\?!\*]+/g, '')
+		str = str.toUpperCase()
 		return str
 	}
 	str = normalize_data(str)
