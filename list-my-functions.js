@@ -7,7 +7,7 @@ const objectName = 'my_library_functions'
 const content = fs.readFileSync(input).toString()
 
 /* Extract Functions */
-const functions = content.match(/function\s+(.+)\s*\)/g).map(x => {
+const functions = content.match(/^function\s+(.+)\s*\)/gm).map(x => {
 	return x.replace(/function\s+/, '')
 }).sort()
 
