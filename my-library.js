@@ -488,6 +488,13 @@ function vector_projection(p, q) {
 		q, (vectors_dot_product(p,q) / Math.pow(vector_length(q),2)))
 }
 
+function apply_proc_to_object_elements(proc, obj) {
+	let y = {}
+	for(const i in obj)
+		y[i] = proc(i,obj[i])
+	return y
+}
+
 function extract_sorted_object_keys(obj, sortFn=(x,y)=>x-y) {
 	let l = []
 	for(const k in obj)
@@ -509,7 +516,7 @@ function remove_similar_elements(arr) {
 }
 
 function is_data_continuous(data) {
-	let z = remove_similar_elements(data)
+	const z = remove_similar_elements(data)
 	if(z.length <= 2)
 		return false
 	if(isNaN(z[0]) || isNaN(z[1]))
@@ -526,4 +533,25 @@ function is_data_continuous(data) {
 
 function is_data_concrete(data) {
 	return !is_data_continuous(data)
+}
+
+function data_frequency(data) {
+	return count_elements(data)
+}
+
+function data_cumulative_frequency(data) {
+	const z = data_frequency(data)
+	const keys = extract_sorted_object_keys(z)
+	let sum = 0
+	for(const k of keys) {
+		sum += z[k]
+		z[k] = sum
+	}
+	return z
+}
+
+function data_relative_frequency(data) {
+	const len = data.length
+	const z = data_frequency(data)
+	return apply_proc_to_object_elements((k,v) => v / len, z)
 }
