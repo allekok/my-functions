@@ -487,3 +487,43 @@ function vector_projection(p, q) {
 	return multiply_vector_by_scalar(
 		q, (vectors_dot_product(p,q) / Math.pow(vector_length(q),2)))
 }
+
+function extract_sorted_object_keys(obj, sortFn=(x,y)=>x-y) {
+	let l = []
+	for(const k in obj)
+		l.push(k)
+	return l.sort(sortFn)
+}
+
+function count_elements(data) {
+	let z = {}
+	for(const o of data) {
+		if(o in z) z[o]++
+		else       z[o]=1
+	}
+	return z
+}
+
+function remove_similar_elements(arr) {
+	return extract_sorted_object_keys(count_elements(arr))
+}
+
+function is_data_continuous(data) {
+	let z = remove_similar_elements(data)
+	if(z.length <= 2)
+		return false
+	if(isNaN(z[0]) || isNaN(z[1]))
+		return false
+	let d = z[1] - z[0]
+	for(let i = 1; i < z.length-1; i++) {
+		if(isNaN(z[0]) || isNaN(z[1]))
+			return false
+		if(d !== (z[i+1] - z[i]))
+			return false
+	}
+	return d
+}
+
+function is_data_concrete(data) {
+	return !is_data_continuous(data)
+}
