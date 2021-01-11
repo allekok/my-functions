@@ -551,7 +551,6 @@ function data_cumulative_frequency(data) {
 }
 
 function data_relative_frequency(data) {
-	const len = data.length
-	const z = data_frequency(data)
-	return apply_proc_to_object_elements((k,v) => v / len, z)
+	return apply_proc_to_object_elements((k,v) => v / data.length,
+					     data_frequency(data))
 }
