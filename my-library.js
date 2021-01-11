@@ -523,7 +523,7 @@ function is_data_continuous(data) {
 		return false
 	let d = z[1] - z[0]
 	for(let i = 1; i < z.length-1; i++) {
-		if(isNaN(z[0]) || isNaN(z[1]))
+		if(isNaN(z[i+1]) || isNaN(z[i]))
 			return false
 		if(d !== (z[i+1] - z[i]))
 			return false
