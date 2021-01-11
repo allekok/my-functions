@@ -540,14 +540,14 @@ function data_frequency(data) {
 }
 
 function data_cumulative_frequency(data) {
-	const z = data_frequency(data)
-	const keys = extract_sorted_object_keys(z)
+	const freq = data_frequency(data)
+	const keys = extract_sorted_object_keys(freq)
 	let sum = 0
 	for(const k of keys) {
-		sum += z[k]
-		z[k] = sum
+		sum += freq[k]
+		freq[k] = sum
 	}
-	return z
+	return freq
 }
 
 function data_relative_frequency(data) {
