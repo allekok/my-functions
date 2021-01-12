@@ -20,17 +20,33 @@ function reverse_string(str) {
 	return revStr
 }
 
-function decimal_to_base_n(num, n) {
+function decimal_integer_to_base_n(num, n) {
 	let x = ''
-
-	if(n < 2)
-		return x
-	
 	do {
 		x = decimal_to_character(num % n) + x
 	} while(num = parseInt(num / n))
-
 	return x
+}
+
+function decimal_floating_point_to_base_n(num, n, precision) {
+	let x = ''
+	let int
+	do {
+		num *= n
+		int = parseInt(num)
+		num -= int
+		x += decimal_to_character(int)
+	} while(--precision > 0 && num)
+	return x
+}
+
+function decimal_to_base_n(num, n, precision=101) {
+	if(n < 2) return x
+	let int = parseInt(num)
+	let fp = num - int
+	int = decimal_integer_to_base_n(int, n)
+	fp = decimal_floating_point_to_base_n(fp, n, precision)
+	return `${int}.${fp}`
 }
 
 function decimal_to_character(num) {
@@ -51,11 +67,26 @@ function decimal_to_hexadecimal(num) {
 	return decimal_to_base_n(num, 16)
 }
 
-function base_n_to_decimal(x, n) {
+function base_n_integer_to_decimal(x, n) {
 	let num = 0
 	for(let i = x.length-1, p = 1; i >= 0; i--, p = Math.pow(n, x.length - i - 1))
 		num += character_to_decimal(x[i]) * p
 	return num
+}
+
+function base_n_floating_point_to_decimal(x, n) {
+	let num = 0
+	for(let i = 0, p = 1 / n; i < x.length; i++, p = 1 / Math.pow(n, i + 1))
+		num += character_to_decimal(x[i]) * p
+	return num
+}
+
+function base_n_to_decimal(x, n) {
+	const tokens = x.split('.')
+	const int = base_n_integer_to_decimal(tokens[0], n)
+	const fp = tokens[1] !== undefined ?
+	      base_n_floating_point_to_decimal(tokens[1], n) : 0
+	return int + fp
 }
 
 function character_to_decimal(char) {
