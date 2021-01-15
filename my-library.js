@@ -401,9 +401,9 @@ function matrix_remove_row_column(A, r, c) {
 function matrix_determinant(A) {
 	if(!is_matrix_square(A))
 		return 'Matrix is not square.'
-	if(matrix_rows(A) < 2 || matrix_columns(A) < 2)
+	if(matrix_rows(A) < 2)
 		return 'Matrix is too small.'
-	
+
 	if(matrix_rows(A) == 2 && matrix_columns(A) == 2) {
 		return product(x=>x, matrix_main_diagonal(A)) -
 			product(x=>x, matrix_anti_diagonal(A))
