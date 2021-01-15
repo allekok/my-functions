@@ -59,6 +59,7 @@ const my_library_functions = [
 	'matrix_columns(A, i=0)',
 	'matrix_determinant(A)',
 	'matrix_dimentions(A)',
+	'matrix_inverse(A)',
 	'matrix_main_diagonal(A)',
 	'matrix_remove_row_column(A, r, c)',
 	'matrix_rows(A)',

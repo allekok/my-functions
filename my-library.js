@@ -420,6 +420,26 @@ function matrix_determinant(A) {
 	}
 }
 
+function matrix_inverse(A) {	
+	const det = matrix_determinant(A)
+	if(typeof(det) == 'string')  /* Error */
+		return det
+	else if(det == 0)
+		return 'Matrix is not invertible.'
+
+	if(matrix_rows(A) <= 2 && matrix_columns(A) <= 2) {
+		let C = apply_proc_to_matrix_elements(
+			(i,j,a) => i != j ? -a : a, A)
+		const temp = C[0][0]
+		C[0][0] = C[1][1]
+		C[1][1] = temp
+		return multiply_matrix(C, 1/det)
+	}
+	else {
+		
+	}
+}
+
 function solve_quadratic_equation(a, b, c) {
 	const delta = (b * b) - (4 * a * c)
 	let roots = {delta: delta}
