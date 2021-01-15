@@ -546,8 +546,12 @@ function remove_similar_elements(arr) {
 	return extract_sorted_object_keys(count_elements(arr))
 }
 
+function data_classes(data) {
+	return remove_similar_elements(data)
+}
+
 function is_data_continuous(data) {
-	const z = remove_similar_elements(data)
+	const z = data_classes(data)
 	if(z.length <= 2)
 		return false
 	if(isNaN(z[0]) || isNaN(z[1]))
@@ -564,6 +568,20 @@ function is_data_continuous(data) {
 
 function is_data_concrete(data) {
 	return !is_data_continuous(data)
+}
+
+function continuous_data_domain(data) {
+	const xs = data_classes(data)
+	return xs[xs.length-1] - xs[0]
+}
+
+function continuous_data_number_of_classes(data) {
+	return Math.round(1 + 3.3 * Math.log10(data.length))
+}
+
+function continuous_data_class_length(data) {
+	return Math.round(continuous_data_domain(data) /
+			  continuous_data_number_of_classes(data))
 }
 
 function data_frequency(data) {
@@ -584,4 +602,13 @@ function data_cumulative_frequency(data) {
 function data_relative_frequency(data) {
 	return apply_proc_to_object_elements((k,v) => v / data.length,
 					     data_frequency(data))
+}
+
+function data_frequency_table_object(data) {
+	return {
+		classes: data_classes(data),
+		frequency: data_frequency(data),
+		relative_frequency: data_relative_frequency(data),
+		cumulative_frequency: data_cumulative_frequency(data),
+	}
 }
