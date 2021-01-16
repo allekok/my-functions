@@ -427,7 +427,7 @@ function matrix_inverse(A) {
 	else if(det == 0)
 		return 'Matrix is not invertible.'
 
-	if(matrix_rows(A) <= 2 && matrix_columns(A) <= 2) {
+	if(matrix_rows(A) == 2 && matrix_columns(A) == 2) {
 		let C = apply_proc_to_matrix_elements(
 			(i,j,a) => i != j ? -a : a, A)
 		const temp = C[0][0]
