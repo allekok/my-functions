@@ -1,2 +1,2 @@
-my-library-functions.js: my-library.js
-	@node list-my-functions.js
+src/my-library-functions.js: src/my-library.js
+	@node utils/list-my-functions.js

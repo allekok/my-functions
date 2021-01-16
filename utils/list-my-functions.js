@@ -1,7 +1,7 @@
 const fs = require('fs')
 
-const input = 'my-library.js'
-const output = 'my-library-functions.js'
+const input = 'src/my-library.js'
+const output = 'src/my-library-functions.js'
 const objectName = 'my_library_functions'
 
 const content = fs.readFileSync(input).toString()
