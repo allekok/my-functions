@@ -436,7 +436,14 @@ function matrix_inverse(A) {
 		return multiply_matrix(C, 1/det)
 	}
 	else {
-		
+		const C = make_matrix(
+			matrix_rows(A), matrix_columns(A),
+			(i,j) => {
+				const det = matrix_determinant(
+					matrix_remove_row_column(A,j,i))
+				return (i+j) % 2 ? -det : det
+			})
+		return multiply_matrix(C, 1/det)
 	}
 }
 
