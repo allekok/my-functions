@@ -69,14 +69,20 @@
 		 #execBtn {
 			 box-sizing:border-box;
 			 min-width:15%;
-			 background:#222;
-			 color:#eee;
+			 background:#000;
+			 color:#fff;
 			 height:100%;
 			 border:0;
 			 outline:0;
 			 padding:.5em;
 			 font-size:1.1em;
 			 font-family:inherit;
+		 }
+		 .c {
+			 color:#00e;
+		 }
+		 .e {
+			 color:#e00;
 		 }
 		</style>
 	</head>
@@ -131,11 +137,11 @@
 			 }
 
 			 try {
-				 append_to_result(input.value + "\n=> " +
+				 append_to_result(input.value + "\n<span class='c'>=></span> " +
 						  eval(input.value))
 			 }
 			 catch (e) {
-				 append_to_result(input.value + "\n=> " + e)
+				 append_to_result(input.value + "\n<span class='e'>=></span> " + e)
 			 }
 		 }
 		 function clear() {
