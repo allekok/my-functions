@@ -36,6 +36,7 @@ const my_library_functions = [
 	'decimal_to_packed_bcd(num)',
 	'extend_left_by_character_n_times(str, char, n)',
 	'extract_sorted_object_keys(obj, sortFn=(x,y)=>x-y)',
+	'factorial(n, acc=1)',
 	'hexadecimal_to_binary(hex)',
 	'hexadecimal_to_decimal(hex)',
 	'hexadecimal_to_octal(hex)',

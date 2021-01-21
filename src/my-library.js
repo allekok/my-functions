@@ -639,3 +639,8 @@ function data_frequency_table_object(data) {
 		cumulative_frequency: data_cumulative_frequency(data),
 	}
 }
+
+function factorial(n, acc=1) {
+	if(n < 2) return acc
+	return factorial(n-1, n*acc)
+}
