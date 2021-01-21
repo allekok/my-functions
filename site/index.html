@@ -18,8 +18,8 @@
 			 height:100%;
 			 font-family:"SourceCodeProBold", monospace;
 			 font-size:14px;
-			 background:#eee;
-			 color:#222;
+			 background:#fff;
+			 color:#000;
 			 font-weight:bold;
 		 }
 		 #shell {
@@ -139,10 +139,11 @@
 			 }
 		 }
 		 function clear() {
+			 let i = 0
 			 result.innerHTML = ""
-			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
-					  my_library_functions.join("\n"))
 			 append_to_result("\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Finding a function]: \"$('a subset of function's prototype')\"\n[Clear screen]: clear()")
+			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
+					  my_library_functions.map(o=>`|${i++}| ${o}`).join("\n"))
 			 result.scrollTo(0,0)
 			 input.focus()
 		 }
