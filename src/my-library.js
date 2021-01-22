@@ -644,3 +644,17 @@ function factorial(n, acc=1) {
 	if(n < 2) return acc
 	return factorial(n-1, n*acc)
 }
+
+function combinations(A, N) {
+	function _combinations(A, N, R, Rs) {
+		if(!N)
+			Rs.push(R)
+		else
+			for(const a of A)
+				_combinations(A, N-1, R+a, Rs)
+	}
+	
+	let Rs = []
+	_combinations(A, N, '', Rs)
+	return Rs
+}

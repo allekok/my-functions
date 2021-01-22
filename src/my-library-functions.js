@@ -16,6 +16,7 @@ const my_library_functions = [
 	'binary_to_hexadecimal(bin)',
 	'binary_to_octal(bin)',
 	'character_to_decimal(char)',
+	'combinations(A, N)',
 	'continuous_data_class_length(data)',
 	'continuous_data_domain(data)',
 	'continuous_data_number_of_classes(data)',
