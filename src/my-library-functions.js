@@ -76,6 +76,7 @@ const my_library_functions = [
 	'octal_to_decimal(octal)',
 	'octal_to_hexadecimal(octal)',
 	'parallel_resistors_equivalent(resistors)',
+	'permutations(A)',
 	'product(f, numbers)',
 	'remove_similar_elements(arr)',
 	'reverse_string(str)',

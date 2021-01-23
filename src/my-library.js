@@ -643,3 +643,29 @@ function combinations(A, N) {
 	_combinations(A, N, '', Rs)
 	return Rs
 }
+
+function permutations(A) {
+	function swap(A, L, R) {
+		let B = []
+		for(const i in A)
+			B.push(A[i])
+		
+		const temp = B[L]
+		B[L] = B[R]
+		B[R] = temp
+		return B
+	}
+	function _permutations(A, L, R, Rs) {
+		if(L == R)
+			Rs.push(A)
+		else
+			for(let i = L; i <= R; i++) {
+				A = swap(A, L, i)
+				_permutations(A, L+1, R, Rs)
+				A = swap(A, L, i)
+			}
+	}
+	let Rs = []
+	_permutations(A, 0, A.length-1, Rs)
+	return Rs
+}
