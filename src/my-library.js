@@ -465,21 +465,6 @@ function solve_quadratic_equation(a, b, c) {
 	return roots
 }
 
-function object_to_string(obj, level=0) {
-	const tab = '\t'.repeat(level)
-	let str = `\n${tab}{\n`
-	
-	for(const key in obj) {
-		value = obj[key]
-		if(typeof(value) == 'object')
-			str += `${tab}\t${key}: ${object_to_string(value,1+level)}\n`
-		else
-			str += `${tab}\t${key}: ${value}\n`
-	}
-	str += `${tab}}`
-	return str
-}
-
 function make_vector(x,y) {
 	return [x,y]
 }

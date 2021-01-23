@@ -138,10 +138,48 @@
 
 			 try {
 				 append_to_result(input.value + "\n<span class='c'>=></span> " +
-						  eval(input.value))
+						  to_string(eval(input.value)))
 			 }
 			 catch (e) {
 				 append_to_result(input.value + "\n<span class='e'>=></span> " + e)
+			 }
+		 }
+		 function to_string(x, level=0) {
+			 if(x === null)
+				 return x
+			 else if(typeof(x) != 'object') {
+				 if(x === undefined)
+					 return x
+				 else if(typeof(x) == 'boolean')
+					 return x
+				 else if(typeof(x) == 'number')
+					 return x
+				 else if(typeof(x) == 'bigint')
+					 return x
+				 else if(typeof(x) == 'symbol')
+					 return x
+				 else if(typeof(x) == 'string') 
+					 return `'${x}'`
+				 else
+					 return x
+			 }
+			 else if(Array.isArray(x)) {
+				 let str = '['
+				 for(const o of x)
+					 str += to_string(o, level) + ','
+				 str = str.substr(0, str.length-1) + ']'
+				 return str
+			 }
+			 else {
+				 const tab = '\t'.repeat(level)
+				 let str = '{\n'
+				 for(let k in x) {
+					 k = to_string(k, level)
+					 let v = to_string(x[k], level+1)
+					 str += `${tab}\t${k}:${v},\n`
+				 }
+				 str = str.substr(0, str.length-2) + '\n' + tab + '}'
+				 return str
 			 }
 		 }
 		 function clear() {
