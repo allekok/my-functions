@@ -99,10 +99,10 @@
 		<script src="../src/my-library.js" defer></script>
 		<script>
 		 /* Globals */
-		 const input = document.querySelector("#input")
-		 const result = document.querySelector("#result")
-		 const execBtn = document.querySelector("#execBtn")
-		 let history = [""]
+		 const input = document.querySelector('#input')
+		 const result = document.querySelector('#result')
+		 const execBtn = document.querySelector('#execBtn')
+		 let history = ['']
 		 let history_pointer = 0
 		 let nth = 0
 		 
@@ -110,21 +110,21 @@
 		 init_result()
 
 		 /* Events */
-		 input.addEventListener("keyup", key_dispatch)
-		 execBtn.addEventListener("click", () => {
+		 input.addEventListener('keyup', key_dispatch)
+		 execBtn.addEventListener('click', () => {
 			 execute()
 			 input.focus()
 		 })
 
 		 /* Functions */
 		 function key_dispatch(e) {
-			 if(e.ctrlKey && e.key == "Enter")
+			 if(e.ctrlKey && e.key == 'Enter')
 				 execute()
-			 else if(e.ctrlKey && e.key == "ArrowDown") {
+			 else if(e.ctrlKey && e.key == 'ArrowDown') {
 				 if(history_pointer < (history.length - 1))
 					 input.value = history[++history_pointer]
 			 }
-			 else if(e.ctrlKey && e.key == "ArrowUp") {
+			 else if(e.ctrlKey && e.key == 'ArrowUp') {
 				 if(history_pointer > 0)
 					 input.value = history[--history_pointer]
 			 }
@@ -137,11 +137,11 @@
 			 }
 
 			 try {
-				 append_to_result(input.value + "\n<span class='c'>=></span> " +
+				 append_to_result(input.value + '\n<span class="c">=></span> ' +
 						  to_string(eval(input.value)))
 			 }
 			 catch (e) {
-				 append_to_result(input.value + "\n<span class='e'>=></span> " + e)
+				 append_to_result(input.value + '\n<span class="e">=></span> ' + e)
 			 }
 		 }
 		 function to_string(x, level=0) {
@@ -160,6 +160,8 @@
 					 return x
 				 else if(typeof(x) == 'string') 
 					 return `'${x}'`
+				 else if(typeof(x) == 'function')
+					 return x.toString()
 				 else
 					 return x
 			 }
@@ -170,7 +172,7 @@
 				 str = str.substr(0, str.length-1) + ']'
 				 return str
 			 }
-			 else {
+			 else if(typeof(x) == 'object') {
 				 const tab = '\t'.repeat(level)
 				 let str = '{\n'
 				 for(let k in x) {
@@ -181,13 +183,15 @@
 				 str = str.substr(0, str.length-2) + '\n' + tab + '}'
 				 return str
 			 }
+			 else
+				 return x
 		 }
 		 function clear() {
 			 let i = 0
-			 result.innerHTML = ""
-			 append_to_result("\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Finding a function]: \"$('a subset of function's prototype')\"\n[Clear screen]: clear()")
+			 result.innerHTML = ''
+			 append_to_result('\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Finding a function]: "$(\'a subset of function\'s prototype\')"\n[Clear screen]: clear()')
 			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
-					  my_library_functions.map(o=>`|${i++}| ${o}`).join("\n"))
+					  my_library_functions.map(o=>`|${i++}| ${o}`).join('\n'))
 			 result.scrollTo(0,0)
 			 input.focus()
 		 }
