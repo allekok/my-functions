@@ -110,14 +110,14 @@
 		 init_result()
 
 		 /* Events */
-		 input.addEventListener("keyup", keyDispatch)
+		 input.addEventListener("keyup", key_dispatch)
 		 execBtn.addEventListener("click", () => {
 			 execute()
 			 input.focus()
 		 })
 
 		 /* Functions */
-		 function keyDispatch(e) {
+		 function key_dispatch(e) {
 			 if(e.ctrlKey && e.key == "Enter")
 				 execute()
 			 else if(e.ctrlKey && e.key == "ArrowDown") {
