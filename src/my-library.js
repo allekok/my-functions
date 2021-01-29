@@ -645,27 +645,22 @@ function combinations(A, N) {
 }
 
 function permutations(A) {
-	function swap(A, L, R) {
-		let B = []
-		for(const i in A)
-			B.push(A[i])
-		
-		const temp = B[L]
-		B[L] = B[R]
-		B[R] = temp
+	function remove(A, i) {
+		B = []
+		for(const j in A)
+			if(i != j)
+				B.push(A[j])
 		return B
 	}
-	function _permutations(A, L, R, Rs) {
-		if(L == R)
-			Rs.push(A)
+	function _permutations(A, R, Rs) {
+		if(A.length == 0)
+			Rs.push(R)
 		else
-			for(let i = L; i <= R; i++) {
-				A = swap(A, L, i)
-				_permutations(A, L+1, R, Rs)
-				A = swap(A, L, i)
-			}
+			for(const i in A)
+				_permutations(remove(A, i), R+A[i], Rs)
 	}
+	
 	let Rs = []
-	_permutations(A, 0, A.length-1, Rs)
+	_permutations(A, '', Rs)
 	return Rs
 }
