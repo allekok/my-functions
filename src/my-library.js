@@ -646,7 +646,7 @@ function combinations(A, N) {
 
 function permutations(A) {
 	function remove(A, i) {
-		B = []
+		let B = []
 		for(const j in A)
 			if(i != j)
 				B.push(A[j])
