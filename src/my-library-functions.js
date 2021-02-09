@@ -35,6 +35,7 @@ const my_library_functions = [
 	'decimal_to_hexadecimal(num)',
 	'decimal_to_octal(num)',
 	'decimal_to_packed_bcd(num)',
+	'draw(bits, on_char='\u{25A0}', off_char='\u{25A1}')',
 	'extend_left_by_character_n_times(str, char, n)',
 	'extract_sorted_object_keys(obj, sortFn=(x,y)=>x-y)',
 	'factorial(n, acc=1)',

@@ -664,3 +664,7 @@ function permutations(A) {
 	_permutations(A, '', Rs)
 	return Rs
 }
+
+function draw(bits, on_char='\u{25A0}', off_char='\u{25A1}') {
+	return bits.replace(/1/g, on_char).replace(/0/g, off_char)
+}
