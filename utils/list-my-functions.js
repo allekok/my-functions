@@ -8,7 +8,7 @@ const content = fs.readFileSync(input).toString()
 
 /* Extract Functions */
 const functions = content.match(/^function\s+(.+)\s*\)/gm).map(x => {
-	return x.replace(/function\s+/, '')
+	return x.replace(/function\s+/, '').replace(/'/g, "\\'")
 }).sort()
 
 /* Array to String */
