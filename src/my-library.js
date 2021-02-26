@@ -668,3 +668,10 @@ function permutations(A) {
 function draw(bits, on_char='\u{25A0}', off_char='\u{25A1}') {
 	return bits.replace(/1/g, on_char).replace(/0/g, off_char)
 }
+
+function draw_vertically(char, n, indent=0) {
+	let str = ''
+	for(let i = 0; i < n; i++)
+		str += ' '.repeat(indent) + char + '\n'
+	return str.trimEnd()
+}
