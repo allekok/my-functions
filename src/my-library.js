@@ -132,18 +132,18 @@ function octal_to_hexadecimal(octal) {
 	return decimal_to_hexadecimal(octal_to_decimal(octal))
 }
 
-function sum(f, numbers) {
-	let sum = 0
-	for(const num of numbers)
-		sum += f(num)
-	return sum
+function sum(f, array) {
+	let n = 0
+	for(const el of array)
+		n += typeof(el) == 'object' ? sum(f, el) : f(el)
+	return n
 }
 
-function product(f, numbers) {
-	let product = 1
-	for(const num of numbers)
-		product *= f(num)
-	return product
+function product(f, array) {
+	let n = 1
+	for(const el of array)
+		n *= typeof(el) == 'object' ? product(f, el) : f(el)
+	return n
 }
 
 function parallel_resistors_equivalent(resistors) {
