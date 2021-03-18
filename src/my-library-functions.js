@@ -55,6 +55,7 @@ const my_library_functions = [
 	'is_matrix_symmetric(A)',
 	'is_matrix_top_triangular(A)',
 	'is_matrix_zero(A)',
+	'lisp(str)',
 	'make_matrix(rows, columns, proc)',
 	'make_vector(x,y)',
 	'matrices_to_string(As)',

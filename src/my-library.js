@@ -675,3 +675,71 @@ function draw_vertically(char, n, indent=0) {
 		str += ' '.repeat(indent) + char + '\n'
 	return str.trimEnd()
 }
+function lisp(str) {
+	function tokenizer(str) {
+		return str.replace(/([\(\)])/g, ' $1 ').
+			replace(/\s+/g, ' ').trim().split(' ')
+	}
+	function read_from_tokens(tokens) {
+		if(tokens.length == 0)
+			return
+		const token = tokens.shift()
+		if(token == '(') {
+			let L = []
+			while(tokens.length > 0 && tokens[0] != ')')
+				L.push(read_from_tokens(tokens))
+			tokens.shift()
+			return L
+		}
+		else if(token == ')')
+			return
+		else
+			return atom(token)
+	}
+	function atom(token) {
+		if(token === '0')
+			return 0
+		else if(Number(token))
+			return Number(token)
+		else
+			return token
+	}
+	function eval(exp, env) {
+		if(!isNaN(exp))
+			return exp
+		else if(!Array.isArray(exp))
+			return env[exp]
+		else if(exp[0] == 'quote')
+			return exp[1]
+		else if(exp[0] == 'eq?')
+			return exp[1] == exp[2]
+		else if(exp[0] == 'if')
+			return eval(exp[eval(exp[1], env) ? 2 : 3], env)
+		else if(exp[0] == 'define')
+			return env[exp[1]] = eval(exp[2], env)
+		else if(exp[0] == 'lambda')
+			return make_proc(exp[1], exp[2], env)
+		else if(exp[0] == 'begin') {
+			exp.shift()
+			for(const x of exp)
+				res = eval(x, env)
+			return res
+		}
+		else
+			return apply(exp, env)
+	}
+	function make_proc(arg, body, env) {
+		return param => {
+			for(const i in arg)
+				env[arg[i]] = eval(param[i], env)
+			return eval(body, env)
+		}
+	}
+	function apply(exp, env) {
+		for(const i in exp)
+			exp[i] = eval(exp[i], env)
+		const proc = exp.shift()
+		return proc(exp)
+	}
+	return eval(read_from_tokens(tokenizer(str)), {})
+}
