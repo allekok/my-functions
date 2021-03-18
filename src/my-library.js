@@ -675,6 +675,7 @@ function draw_vertically(char, n, indent=0) {
 		str += ' '.repeat(indent) + char + '\n'
 	return str.trimEnd()
 }
+
 function lisp(str) {
 	function tokenizer(str) {
 		return str.replace(/([\(\)])/g, ' $1 ').
