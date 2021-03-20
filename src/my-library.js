@@ -697,6 +697,9 @@ function lisp(str) {
 		else
 			return atom(token)
 	}
+	function read(str) {
+		return read_from_tokens(tokenizer(str))
+	}
 	function atom(token) {
 		if(token === '0')
 			return 0
@@ -756,5 +759,7 @@ function lisp(str) {
 		const proc = exp.shift()
 		return proc(exp)
 	}
-	return eval(read_from_tokens(tokenizer(str)), make_env({}, undefined))
+	
+	let global_env = make_env({ }, undefined)
+	return eval(read(str), global_env)
 }
