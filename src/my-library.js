@@ -738,10 +738,10 @@ function lisp(str) {
 			'pairs': pairs
 		}
 	}
-	function make_proc(arg, body, env) {
-		return param => {
-			for(const i in arg)
-				env[arg[i]] = eval(param[i], env)
+	function make_proc(parm, body, env) {
+		return arg => {
+			for(const i in parm)
+				env[parm[i]] = eval(arg[i], env)
 			return eval(body, env)
 		}
 	}
@@ -761,5 +761,7 @@ function lisp(str) {
 	}
 	
 	let global_env = make_env({ }, undefined)
+	Object.getOwnPropertyNames(Math).forEach(o => global_env.pairs[o] = Math[o])
+	
 	return eval(read(str), global_env)
 }
