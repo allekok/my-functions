@@ -709,7 +709,7 @@ function lisp(str) {
 		if(!isNaN(exp))
 			return exp
 		else if(!Array.isArray(exp))
-			return env[exp]
+			return lookup_env(exp, env)
 		else if(exp[0] == 'quote')
 			return exp[1]
 		else if(exp[0] == 'eq?')
@@ -719,7 +719,7 @@ function lisp(str) {
 		else if(exp[0] == 'define')
 			return env[exp[1]] = eval(exp[2], env)
 		else if(exp[0] == 'lambda')
-			return make_proc(exp[1], exp[2], env)
+			return make_proc(exp[1], exp[2], make_env({}, env))
 		else if(exp[0] == 'begin') {
 			exp.shift()
 			for(const x of exp)
@@ -729,6 +729,12 @@ function lisp(str) {
 		else
 			return apply(exp, env)
 	}
+	function make_env(pairs, parent) {
+		return {
+			'parent': parent,
+			'pairs': pairs
+		}
+	}
 	function make_proc(arg, body, env) {
 		return param => {
 			for(const i in arg)
@@ -736,11 +742,19 @@ function lisp(str) {
 			return eval(body, env)
 		}
 	}
+	function lookup_env(key, env) {
+		if(key in env.pairs)
+			return env.pairs[key]
+		else if(env.parent !== undefined)
+			return lookup_env(key, env.parent)
+		else
+			return key
+	}
 	function apply(exp, env) {
 		for(const i in exp)
 			exp[i] = eval(exp[i], env)
 		const proc = exp.shift()
 		return proc(exp)
 	}
-	return eval(read_from_tokens(tokenizer(str)), {})
+	return eval(read_from_tokens(tokenizer(str)), make_env({}, undefined))
 }
