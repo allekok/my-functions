@@ -697,9 +697,6 @@ function lisp(str) {
 		else
 			return atom(token)
 	}
-	function read(str) {
-		return read_from_tokens(tokenizer(str))
-	}
 	function atom(token) {
 		if(token === '0')
 			return 0
@@ -707,6 +704,9 @@ function lisp(str) {
 			return Number(token)
 		else
 			return token
+	}
+	function parse(str) {
+		return read_from_tokens(tokenizer(str))
 	}
 	function eval(exp, env) {
 		if(!isNaN(exp))
@@ -760,8 +760,8 @@ function lisp(str) {
 		return proc(exp)
 	}
 	
-	let global_env = make_env({ }, undefined)
+	let global_env = make_env({ }, undefined /* Math */)
 	Object.getOwnPropertyNames(Math).forEach(o => global_env.pairs[o] = Math[o])
 	
-	return eval(read(str), global_env)
+	return eval(parse(str), global_env)
 }
