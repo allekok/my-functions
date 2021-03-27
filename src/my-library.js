@@ -768,13 +768,13 @@ function lisp(str) {
 
 function server(url, func, arg, callback, keyword='request') {
 	function make_object() {
-		return encodeURIComponent(JSON.stringify({
+		return {
 			func: func,
 			arg: arg,
-		}))
+		}
 	}
 	function make_request(object) {
-		return `${keyword}=${object}`
+		return `${keyword}=${encodeURIComponent(JSON.stringify(object))}`
 	}
 
 	const request = make_request(make_object())
@@ -783,6 +783,7 @@ function server(url, func, arg, callback, keyword='request') {
 	x.open('post', url)
 	x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
 	x.send(request)
+	return x
 }
 
 function my_server(func, arg, callback) {
