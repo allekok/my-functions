@@ -765,3 +765,27 @@ function lisp(str) {
 	
 	return eval(parse(str), global_env)
 }
+
+function server(url, func, arg, callback, keyword='request') {
+	function make_object() {
+		return encodeURIComponent(JSON.stringify({
+			func: func,
+			arg: arg,
+		}))
+	}
+	function make_request(object) {
+		return `${keyword}=${object}`
+	}
+
+	const request = make_request(make_object())
+	const x = new XMLHttpRequest
+	x.onload = e => callback(x)
+	x.open('post', url)
+	x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+	x.send(request)
+}
+
+function my_server(func, arg, callback) {
+	return server('../srv/', func, arg,
+		      x => callback(JSON.parse(x.responseText)))
+}
