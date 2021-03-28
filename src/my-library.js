@@ -708,7 +708,7 @@ function lisp(str) {
 	function parse(str) {
 		return read_from_tokens(tokenizer(str))
 	}
-	function eval(exp, env) {
+	function _eval(exp, env) {
 		if(!isNaN(exp))
 			return exp
 		else if(!Array.isArray(exp))
@@ -718,15 +718,15 @@ function lisp(str) {
 		else if(exp[0] == 'eq?')
 			return exp[1] == exp[2]
 		else if(exp[0] == 'if')
-			return eval(exp[eval(exp[1], env) ? 2 : 3], env)
+			return _eval(exp[_eval(exp[1], env) ? 2 : 3], env)
 		else if(exp[0] == 'define')
-			return env[exp[1]] = eval(exp[2], env)
+			return env.pairs[exp[1]] = _eval(exp[2], env)
 		else if(exp[0] == 'lambda')
 			return make_proc(exp[1], exp[2], make_env({}, env))
 		else if(exp[0] == 'begin') {
 			exp.shift()
 			for(const x of exp)
-				res = eval(x, env)
+				res = _eval(x, env)
 			return res
 		}
 		else
@@ -741,8 +741,8 @@ function lisp(str) {
 	function make_proc(parm, body, env) {
 		return arg => {
 			for(const i in parm)
-				env[parm[i]] = eval(arg[i], env)
-			return eval(body, env)
+				env.pairs[parm[i]] = _eval(arg[i], env)
+			return _eval(body, env)
 		}
 	}
 	function lookup_env(key, env) {
@@ -755,15 +755,16 @@ function lisp(str) {
 	}
 	function apply(exp, env) {
 		for(const i in exp)
-			exp[i] = eval(exp[i], env)
+			exp[i] = _eval(exp[i], env)
 		const proc = exp.shift()
 		return proc(exp)
 	}
+	function js_eval(arg) {
+		return eval(arg.join(' '))
+	}
 	
-	let global_env = make_env({ }, undefined /* Math */)
-	Object.getOwnPropertyNames(Math).forEach(o => global_env.pairs[o] = Math[o])
-	
-	return eval(parse(str), global_env)
+	let global_env = make_env({ js: js_eval }, undefined)
+	return _eval(parse(str), global_env)
 }
 
 function server(url, func, arg, callback, keyword='request') {
