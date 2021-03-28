@@ -176,8 +176,8 @@
 				 const tab = '\t'.repeat(level)
 				 let str = '{\n'
 				 for(let k in x) {
-					 k = to_string(k, level)
 					 let v = to_string(x[k], level+1)
+					 k = to_string(k, level)
 					 str += `${tab}\t${k}:${v},\n`
 				 }
 				 str = str.substr(0, str.length-2) + '\n' + tab + '}'
