@@ -36,11 +36,8 @@ function run($arr) {
 	global $my_library_function_names;
 	$func = $arr["func"];
 	$arg = $arr["arg"];
-	if($func && $arg && $my_library_function_names[$func]) {
-		if(is_array($arg) && count($arg) !== 1)
-			return "E: Invalid Arg Num.";
+	if($func && $arg && is_string($func) && $my_library_function_names[$func])
 		return $func($arg);
-	}
 	return "E: Invalid Request Object.";
 }
 ?>
