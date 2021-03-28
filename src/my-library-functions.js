@@ -76,6 +76,7 @@ const my_library_functions = [
 	'multiply_matrix_by_scalar(A, n)',
 	'multiply_vector_by_scalar(p, n)',
 	'my_server(func, arg, callback)',
+	'object_properties(obj)',
 	'octal_to_binary(octal)',
 	'octal_to_decimal(octal)',
 	'octal_to_hexadecimal(octal)',

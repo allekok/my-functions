@@ -791,3 +791,7 @@ function my_server(func, arg, callback) {
 	return server('../srv/', func, arg,
 		      x => callback(JSON.parse(x.responseText)))
 }
+
+function object_properties(obj) {
+	return Object.getOwnPropertyNames(obj)
+}
