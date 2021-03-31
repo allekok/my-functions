@@ -715,8 +715,6 @@ function lisp(str) {
 			return lookup_env(exp, env)
 		else if(exp[0] == 'quote')
 			return exp[1]
-		else if(exp[0] == 'eq?')
-			return exp[1] == exp[2]
 		else if(exp[0] == 'if')
 			return _eval(exp[_eval(exp[1], env) ? 2 : 3], env)
 		else if(exp[0] == 'define')
