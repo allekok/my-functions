@@ -11,7 +11,7 @@ function parse_html($html) {
 	return $dom;
 }
 
-function get_elements_by_class($parent, $class, $tag = "*") {
+function get_elements_by_class($parent, $class, $tag="*") {
 	$elements = [];
 	foreach($parent->getElementsByTagName($tag) as $el) {
 		$el_class = $el->getAttribute("class");
