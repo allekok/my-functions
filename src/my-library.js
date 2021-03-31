@@ -730,6 +730,12 @@ function lisp(str) {
 		else
 			return apply(exp, env)
 	}
+	function clone(arr) {
+		let new_arr = []
+		for(const o of arr)
+			new_arr.push(Array.isArray(o) ? clone(o) : o)
+		return new_arr
+	}
 	function make_env(pairs, parent) {
 		return {
 			'parent': parent,
@@ -740,7 +746,7 @@ function lisp(str) {
 		return arg => {
 			for(const i in parm)
 				env.pairs[parm[i]] = _eval(arg[i], env)
-			return _eval(body, env)
+			return _eval(clone(body), env)
 		}
 	}
 	function lookup_env(key, env) {
