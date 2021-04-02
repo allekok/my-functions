@@ -85,6 +85,7 @@ const my_library_functions = [
 	'product(f, array)',
 	'remove_similar_elements(arr)',
 	'reverse_string(str)',
+	'rtl(str)',
 	'series_resistors_equivalent(resistors)',
 	'server(url, func, arg, callback, keyword=\'request\')',
 	'solve_quadratic_equation(a, b, c)',

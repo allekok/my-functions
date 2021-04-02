@@ -797,3 +797,8 @@ function my_server(func, arg, callback) {
 function object_properties(obj) {
 	return Object.getOwnPropertyNames(obj)
 }
+
+function rtl(str) {
+	return `<span class='rtl'>${str}</span>`
+}
+
