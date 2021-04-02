@@ -802,3 +802,15 @@ function rtl(str) {
 	return `<span class='rtl'>${str}</span>`
 }
 
+function allekok_status() {
+	return my_server('download', 'https://allekok.ir/status.php',
+			 t => display(rtl(t)))
+}
+
+function tewar(w, n=25) {
+	w = encodeURIComponent(w)
+	const url = 'https://allekok.ir/tewar/src/backend/lookup.php'
+	return my_server('download',
+			 `${url}?q=${w}&n=${n}&dicts=all&output=text`,
+			 t => display(rtl(t)))
+}
