@@ -1,4 +1,22 @@
 <?php
+require("my-library-functions.php");
+
+function apropos($str) {
+	function normalize_data($str) {
+		$str = trim($str);
+		$str = preg_replace("/[\s_\-,\.\?!\*]+/u", "", $str);
+		$str = strtoupper($str);
+		return $str;
+	}
+	$str = normalize_data($str);
+	$result = "\n";
+	foreach(my_library_functions as $f) {
+		if(strpos(normalize_data($f), $str) !== FALSE)
+			$result .= "$f\n";
+	}
+	return $result;
+}
+
 function download($url) {
 	if(substr($url, 0, 8) == "https://" or substr($url, 0, 7) == "http://")
 		return @file_get_contents($url);

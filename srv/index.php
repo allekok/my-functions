@@ -1,7 +1,6 @@
 <?php
 /* Globals */
 require("my-library.php");
-require("my-library-functions.php");
 $my_library_function_names = list_function_names(my_library_functions);
 const REQ_KEYWORD = "request";
 
