@@ -787,7 +787,6 @@ function server(url, func, arg, callback, keyword='request') {
 	x.open('post', url)
 	x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
 	x.send(request)
-	return x
 }
 
 function my_server(func, arg, callback) {
