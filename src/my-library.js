@@ -626,7 +626,8 @@ function data_frequency_table_object(data) {
 }
 
 function factorial(n, acc=1) {
-	return n < 2 ? acc : factorial(n-1, n*acc)
+	while(n > 1) acc *= n--
+	return acc
 }
 
 function combinations(A, N) {
