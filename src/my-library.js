@@ -681,6 +681,14 @@ function lisp(str) {
 		return str.replace(/([\(\)])/g, ' $1 ').
 			replace(/\s+/g, ' ').trim().split(' ')
 	}
+	function atom(token) {
+		if(token === '0')
+			return 0
+		else if(Number(token))
+			return Number(token)
+		else
+			return token
+	}
 	function read_from_tokens(tokens) {
 		if(tokens.length == 0)
 			return
@@ -697,38 +705,53 @@ function lisp(str) {
 		else
 			return atom(token)
 	}
-	function atom(token) {
-		if(token === '0')
-			return 0
-		else if(Number(token))
-			return Number(token)
-		else
-			return token
-	}
 	function parse(str) {
 		return read_from_tokens(tokenizer(str))
 	}
 	function _eval(exp, env) {
-		if(!isNaN(exp))
-			return exp
-		else if(!Array.isArray(exp))
-			return lookup_env(exp, env)
-		else if(exp[0] == 'quote')
-			return exp[1]
-		else if(exp[0] == 'if')
-			return _eval(exp[_eval(exp[1], env) ? 2 : 3], env)
-		else if(exp[0] == 'define')
-			return env.pairs[exp[1]] = _eval(exp[2], env)
-		else if(exp[0] == 'lambda')
-			return make_proc(exp[1], exp[2], make_env({}, env))
-		else if(exp[0] == 'begin') {
-			exp.shift()
-			for(const x of exp)
-				res = _eval(x, env)
-			return res
+		while(true) {
+			if(!isNaN(exp))
+				return exp
+			else if(!Array.isArray(exp))
+				return lookup_env(exp, env)
+			else if(exp[0] == 'quote')
+				return exp[1]
+			else if(exp[0] == 'if')
+				exp = exp[_eval(exp[1], env) ? 2 : 3]
+			else if(exp[0] == 'define')
+				return envs[env][1][exp[1]] = _eval(exp[2], env)
+			else if(exp[0] == 'lambda')
+				return make_proc(exp[1], exp[2], make_env({}, env))
+			else if(exp[0] == 'begin') {
+				exp.shift()
+				for(let i = 0; i < exp.length-1; i++)
+					_eval(exp[i], env)
+				exp = exp[exp.length - 1]
+			}
+			else {
+				const proc = _eval(exp.shift(), env)
+				if(is_primitive(proc)) {
+					const arg = exp.map(o => _eval(o, env))
+					exp = proc(arg)
+				}
+				else {
+					const param = proc[1]
+					const body = proc[2]
+					const proc_env_name = proc[3]
+					const exec_env_name = make_env({}, proc_env_name)
+					let exec_env = envs[exec_env_name]
+					
+					for(const i in param)
+						exec_env[1][param[i]] = _eval(exp[i], env)
+					
+					env = exec_env_name
+					exp = clone(body)
+				}
+			}
 		}
-		else
-			return apply(exp, env)
+	}
+	function is_primitive(proc) {
+		return typeof(proc) == 'function'
 	}
 	function clone(arr) {
 		let new_arr = []
@@ -736,38 +759,35 @@ function lisp(str) {
 			new_arr.push(Array.isArray(o) ? clone(o) : o)
 		return new_arr
 	}
-	function make_env(pairs, parent) {
-		return {
-			'parent': parent,
-			'pairs': pairs
+	function generate_env_name() {
+		return env_key++
+	}
+	function make_env(pairs, parent, env) {
+		const env_name = generate_env_name()
+		envs[env_name] = [parent, pairs]
+		return env_name
+	}
+	function lookup_env(key, env_name) {
+		while(true) {
+			const env = envs[env_name]
+			if(key in env[1])
+				return env[1][key]
+			else if(env[0] !== undefined)
+				env_name = env[0]
+			else
+				return key
 		}
 	}
-	function make_proc(parm, body, env) {
-		return arg => {
-			for(const i in parm)
-				env.pairs[parm[i]] = _eval(arg[i], env)
-			return _eval(clone(body), env)
-		}
-	}
-	function lookup_env(key, env) {
-		if(key in env.pairs)
-			return env.pairs[key]
-		else if(env.parent !== undefined)
-			return lookup_env(key, env.parent)
-		else
-			return key
-	}
-	function apply(exp, env) {
-		for(const i in exp)
-			exp[i] = _eval(exp[i], env)
-		const proc = exp.shift()
-		return proc(exp)
+	function make_proc(param, body, env) {
+		return ['closure', param, body, env]
 	}
 	function js_eval(arg) {
 		return eval(arg.join(' '))
 	}
 	
-	let global_env = make_env({ js: js_eval }, undefined)
+	let env_key = 0
+	let envs = []
+	const global_env = make_env({ js: js_eval }, undefined)
 	return _eval(parse(str), global_env)
 }
 
