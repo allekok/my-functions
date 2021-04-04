@@ -815,3 +815,11 @@ function tewar(w, n=25) {
 			 `${url}?q=${w}&n=${n}&dicts=all&output=text`,
 			 t => display(rtl(t)))
 }
+
+function count_lines(str) {
+	let n = 0
+	for(const i in str)
+		if(str[i] == '\n')
+			n++
+	return n
+}
