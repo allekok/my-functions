@@ -678,8 +678,7 @@ function draw_vertically(char, n, indent=0) {
 
 function lisp(str) {
 	function tokenizer(str) {
-		return str.replace(/([\(\)])/g, ' $1 ').
-			replace(/\s+/g, ' ').trim().split(' ')
+		return str.replace(/([\(\)])/g, ' $1 ').trim().split(/\s+/g)
 	}
 	function atom(token) {
 		if(token === '0')
@@ -715,11 +714,16 @@ function lisp(str) {
 			else if(!Array.isArray(exp))
 				return lookup_env(exp, env)
 			else if(exp[0] == 'quote')
-				return exp[1]
+				return exp.slice(1)
 			else if(exp[0] == 'if')
 				exp = exp[_eval(exp[1], env) ? 2 : 3]
-			else if(exp[0] == 'define')
+			else if(exp[0] == 'define') {
+				if(Array.isArray(exp[1])) {
+					const k = exp[1].shift()
+					return envs[env][1][k] = make_proc(exp[1], exp[2], make_env({}, env))
+				}
 				return envs[env][1][exp[1]] = _eval(exp[2], env)
+			}
 			else if(exp[0] == 'lambda')
 				return make_proc(exp[1], exp[2], make_env({}, env))
 			else if(exp[0] == 'begin') {
@@ -783,6 +787,9 @@ function lisp(str) {
 	}
 	function js_eval(arg) {
 		return eval(arg.join(' '))
+	}
+	function _print(x) {
+		return append_to_result(to_string(x))
 	}
 	
 	let env_key = 0
