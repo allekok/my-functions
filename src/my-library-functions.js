@@ -96,6 +96,7 @@ const my_library_functions = [
 	'subtract_vectors(p, q)',
 	'sum(f, array)',
 	'tewar(w, n=25)',
+	'time(proc)',
 	'unit_vector(p)',
 	'vector_length(p)',
 	'vector_projection(p, q)',

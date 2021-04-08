@@ -843,3 +843,9 @@ function count_lines(str) {
 			n++
 	return n
 }
+
+function time(proc) {
+	const start = Date.now()
+	const res = proc()
+	return [(Date.now() - start) / 1000, res]
+}
