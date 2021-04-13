@@ -789,7 +789,7 @@ function lisp(str) {
 		return eval(arg.join(' '))
 	}
 	function _print(x) {
-		return append_to_result(to_string(x))
+		return display(x)
 	}
 	
 	let env_key = 0
