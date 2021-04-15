@@ -678,12 +678,12 @@ function draw_vertically(char, n, indent=0) {
 
 function lisp(str) {
 	function tokenizer(str) {
-		return str.replace(/([\(\)])/g, ' $1 ').trim().split(/\s+/g)
+		return str.replace(/([\(\)])/g, ' $1 ').trim().split(/\s+/)
 	}
 	function atom(token) {
 		if(token === '0')
 			return 0
-		else if(Number(token))
+		else if(Number(token))  /* !isNaN(Number(token)) */
 			return Number(token)
 		else
 			return token
