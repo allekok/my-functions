@@ -95,7 +95,7 @@ const my_library_functions = [
 	'subtract_matrices(A, B)',
 	'subtract_vectors(p, q)',
 	'sum(f, array)',
-	'tewar(w, n=25)',
+	'tewar(w, n=25, dicts=\'all\', out=\'text\')',
 	'time(proc)',
 	'unit_vector(p)',
 	'vector_length(p)',

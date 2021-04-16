@@ -832,11 +832,11 @@ function allekok_status() {
 			 t => display(rtl(t)))
 }
 
-function tewar(w, n=25) {
+function tewar(w, n=25, dicts='all', out='text') {
 	w = encodeURIComponent(w)
 	const url = 'https://allekok.ir/tewar/src/backend/lookup.php'
 	return my_server('download',
-			 `${url}?q=${w}&n=${n}&dicts=all&output=text`,
+			 `${url}?q=${w}&n=${n}&dicts=${dicts}&output=${out}`,
 			 t => display(rtl(t)))
 }
 
