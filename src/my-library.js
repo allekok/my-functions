@@ -210,12 +210,9 @@ function matrices_to_string(As) {
 }
 
 function string_to_matrix(str) {
-	str = str.trim()
-	str = str.replace(/\n+/g, '\n')
-	str = str.replace(/[ \t]+/g, ' ')
-	let C = str.split('\n')
-	C = C.map(r => r.trim().split(' ').map(n => Number(n)))
-	return C
+	return str.trim().split(/\n+/).map(
+		r => r.trim().split(/[ \t]+/).map(
+			n => Number(n)))
 }
 
 function matrix_rows(A) {
