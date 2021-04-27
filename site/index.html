@@ -33,8 +33,6 @@
 			 font-family:"DroidNaskhRegular","SourceCodeProBold",
 			 monospace;
 			 font-size:14px;
-			 background:#fff;
-			 color:#000;
 			 font-weight:bold;
 		 }
 		 #shell {
@@ -67,7 +65,7 @@
 			 font-size:1.1em;
 			 font-weight:inherit;
 			 max-width:100%;
-			 width:100%;
+			 width:80%;
 			 height:100%;
 			 box-sizing:border-box;
 		 }
@@ -79,38 +77,38 @@
 		 #inputDiv {
 			 display:flex;
 			 width:100%;
-			 height:11em;
+			 height:15em;
 		 }
-		 #execBtn {
+		 button {
 			 box-sizing:border-box;
-			 min-width:15%;
-			 background:#000;
-			 color:#fff;
+			 font-size:2em;
+			 font-family:inherit;
 			 height:100%;
 			 border:0;
 			 outline:0;
-			 padding:.5em;
-			 font-size:1.1em;
-			 font-family:inherit;
+			 padding:0 .4em;
+			 min-width:10%;
 		 }
-		 .c {
-			 color:#00e;
-		 }
-		 .e {
-			 color:#e00;
+		 #themeBtn {
+			 font-family:"MaterialIcons";
 		 }
 		 .rtl {
 			 display:inline-block;
 			 direction:rtl;
 		 }
+		 ::-webkit-scrollbar {
+			 width:1em;
+		 }
 		</style>
+		<style id="theme"></style>
 	</head>
 	<body>
 		<div id="shell">
 			<div id="result"></div>
 			<div id="inputDiv">
-				<textarea id="input" placeholder=">"></textarea>
+				<textarea id="input"></textarea>
 				<button type="button" id="execBtn">&gt;&gt;</button>
+				<button type="button" id="themeBtn">color_lens</button>
 			</div>
 		</div>
 
@@ -121,6 +119,12 @@
 		 const input = document.querySelector('#input')
 		 const result = document.querySelector('#result')
 		 const execBtn = document.querySelector('#execBtn')
+		 const themeBtn = document.querySelector('#themeBtn')
+		 const themes = [
+			 ['light', ['#fff','#000','#00e','#e00']],
+			 ['dark',  ['#000','#fff','#5f5','#e55']],
+		 ]
+		 let current_theme = 0
 		 let history = ['']
 		 let history_pointer = 0
 		 let nth = 0
@@ -130,10 +134,17 @@
 
 		 /* Events */
 		 input.addEventListener('keyup', key_dispatch)
+		 themeBtn.addEventListener('click', change_theme)
 		 execBtn.addEventListener('click', () => {
 			 execute()
 			 input.focus()
 		 })
+		 window.addEventListener('load', () => {
+			 current_theme = load_saved_theme() % themes.length
+			 apply_theme(themes[current_theme][1])
+		 })
+		 window.addEventListener('keyup', e =>
+			 e.altKey && e.code == 'KeyT' && change_theme())
 
 		 /* Functions */
 		 function key_dispatch(e) {
@@ -224,6 +235,28 @@
 		 }
 		 function display(str) {
 			 append_to_result(to_string(str))
+		 }
+		 function apply_theme(theme) {
+			 document.getElementById('theme').innerHTML = `
+			 body { background: ${theme[0]}; color: ${theme[1]} }
+			 button { background: ${theme[2]}; color: ${theme[0]} }
+ 			 button:hover { background: ${theme[1]}; color: ${theme[9]} }
+ 			 .c { color: ${theme[2]} }
+			 .e { color: ${theme[3]} }
+			 ::selection { background: ${theme[2]}; color: ${theme[0]} }
+			 ::-webkit-scrollbar-track { background: ${theme[0]} }
+			 ::-webkit-scrollbar-thumb { background: ${theme[2]} }`
+		 }
+		 function save_current_theme() {
+			 localStorage.setItem('theme', current_theme)
+		 }
+		 function load_saved_theme() {
+			 return localStorage.getItem('theme') || current_theme
+		 }
+		 function change_theme() {
+			 current_theme = (current_theme + 1) % themes.length
+			 apply_theme(themes[current_theme][1])
+			 save_current_theme()
 		 }
 		</script>
 	</body>
