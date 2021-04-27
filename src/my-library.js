@@ -627,21 +627,21 @@ function factorial(n, acc=1) {
 	return acc
 }
 
-function combinations(A, N) {
-	function _combinations(A, N, R, Rs) {
+function combinations(A, N=A.length, R='', join=(A,a)=>A+a) {
+	function _combinations(N, R) {
 		if(!N)
 			Rs.push(R)
 		else
 			for(const a of A)
-				_combinations(A, N-1, R+a, Rs)
+				_combinations(N-1, join(R,a))
 	}
 	
 	let Rs = []
-	_combinations(A, N, '', Rs)
+	_combinations(N, R)
 	return Rs
 }
 
-function permutations(A) {
+function permutations(A, N=A.length, R='', join=(A,a)=>A+a) {
 	function remove(A, i) {
 		let B = []
 		for(const j in A)
@@ -649,16 +649,16 @@ function permutations(A) {
 				B.push(A[j])
 		return B
 	}
-	function _permutations(A, R, Rs) {
-		if(A.length == 0)
+	function _permutations(A, N, R) {
+		if(N == 0)
 			Rs.push(R)
 		else
 			for(const i in A)
-				_permutations(remove(A, i), R+A[i], Rs)
+				_permutations(remove(A,i), N-1, join(R,A[i]))
 	}
 	
 	let Rs = []
-	_permutations(A, '', Rs)
+	_permutations(A, N, R)
 	return Rs
 }
 
@@ -675,7 +675,7 @@ function draw_vertically(char, n, indent=0) {
 
 function lisp(str) {
 	function tokenizer(str) {
-		return str.replace(/([\(\)])/g, ' $1 ').trim().split(/\s+/)
+		return str.replace(/([\(\)\[\]\{\}])/g, ' $1 ').trim().split(/\s+/)
 	}
 	function atom(token) {
 		if(token === '0')
@@ -689,14 +689,14 @@ function lisp(str) {
 		if(tokens.length == 0)
 			return
 		const token = tokens.shift()
-		if(token == '(') {
+		if('({['.indexOf(token) !== -1) {
 			let L = []
-			while(tokens.length > 0 && tokens[0] != ')')
+			while(tokens.length > 0 && ']})'.indexOf(tokens[0]) === -1)
 				L.push(read_from_tokens(tokens))
 			tokens.shift()
 			return L
 		}
-		else if(token == ')')
+		else if(']})'.indexOf(token) !== -1)
 			return
 		else
 			return atom(token)
@@ -852,4 +852,66 @@ function time(proc) {
 	const start = Date.now()
 	const res = proc()
 	return [(Date.now() - start) / 1000, res]
+}
+
+function and_gate(a, b) {
+	/* a = b = 1 */
+	return a ? b : a
+}
+
+function or_gate(a, b) {
+	/* a != b != 0 */
+	return a ? a : b
+}
+
+function not_gate(a) {
+	return a ? false : true
+}
+
+function nand_gate(a, b) {
+	/* a != b != 1 */
+	return not_gate(and_gate(a, b))
+}
+
+function nor_gate(a, b) {
+	/* a = b = 0 */
+	return not_gate(or_gate(a, b))
+}
+
+function xor_gate(a, b) {
+	/* a != b */
+	return and_gate(or_gate(a, b), nand_gate(a, b))
+}
+
+function noxor_gate(a, b) {
+	/* a = b */
+	return not_gate(xor_gate(a, b))
+}
+
+function false_gate(a, b) {
+	/* !a = !b = 1 */
+	return and_gate(not_gate(a), not_gate(b))
+}
+
+function true_false_gate(a, b) {
+	/* a = !b = 1 */
+	return and_gate(a, not_gate(b))
+}
+
+function false_true_gate(a, b) {
+	/* !a = b = 1 */
+	return and_gate(not_gate(a), b)
+}
+
+function test_function(proc, inputs) {
+	const args = combinations(inputs, proc.length,
+				  [], (A,a) => A.concat(a))
+	let result = {}
+	for(const arg of args)
+		result[arg] = proc(...arg)
+	return result
+}
+
+function truth_table(proc) {
+	return test_function(proc, [true,false])
 }
