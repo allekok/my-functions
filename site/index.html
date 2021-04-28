@@ -6,9 +6,9 @@
 		<title>My Functions</title>
 		<style>
 		 @font-face {
-			 font-family:"SourceCodeProBold";
+			 font-family:"SourceCodePro";
 			 font-display:swap;
-			 src:url("./font/SourceCodePro-Bold.woff2")
+			 src:url("./font/SourceCodePro-Medium.woff2")
 			 format("woff2");
 		 }
 		 @font-face {
@@ -30,10 +30,10 @@
 		 body {
 			 margin:0;
 			 height:100%;
-			 font-family:"DroidNaskhRegular","SourceCodeProBold",
+			 font-family:"DroidNaskhRegular","SourceCodePro",
 			 monospace;
-			 font-size:14px;
-			 font-weight:bold;
+			 font-size:15px;
+			 line-height:1.4;
 		 }
 		 #shell {
 			 display:flex;
@@ -64,9 +64,9 @@
 			 font-family:inherit;
 			 font-size:1.1em;
 			 font-weight:inherit;
-			 max-width:100%;
+			 max-width:80%;
 			 width:80%;
-			 height:100%;
+			 height:10rem;
 			 box-sizing:border-box;
 		 }
 		 #input:focus {
@@ -77,20 +77,30 @@
 		 #inputDiv {
 			 display:flex;
 			 width:100%;
-			 height:15em;
 		 }
 		 button {
+			 -webkit-appearance:none;
 			 box-sizing:border-box;
-			 font-size:2em;
+			 font-size:2rem;
 			 font-family:inherit;
 			 height:100%;
 			 border:0;
 			 outline:0;
-			 padding:0 .4em;
-			 min-width:10%;
 		 }
-		 #themeBtn {
+		 #execBtn {
+			 width:100%;
+			 max-width:12%;
+		 }
+		 #miscBtns button {
+			 width:100%;
+		 }
+		 #miscBtns {
+			 display:flex;
+			 flex-direction:column;
 			 font-family:"MaterialIcons";
+			 font-size:2rem;
+			 width:100%;
+			 max-width:12%;
 		 }
 		 .rtl {
 			 display:inline-block;
@@ -108,7 +118,11 @@
 			<div id="inputDiv">
 				<textarea id="input"></textarea>
 				<button type="button" id="execBtn">&gt;&gt;</button>
-				<button type="button" id="themeBtn">color_lens</button>
+				<div id="miscBtns">
+					<button type="button" id="upBtn">keyboard_arrow_up</button>
+					<button type="button" id="themeBtn">color_lens</button>
+					<button type="button" id="dnBtn">keyboard_arrow_down</button>
+				</div>
 			</div>
 		</div>
 
@@ -120,6 +134,8 @@
 		 const result = document.querySelector('#result')
 		 const execBtn = document.querySelector('#execBtn')
 		 const themeBtn = document.querySelector('#themeBtn')
+		 const upBtn = document.querySelector('#upBtn')
+		 const dnBtn = document.querySelector('#dnBtn')
 		 const themes = [
 			 ['light', ['#fff','#000','#00e','#e00']],
 			 ['dark',  ['#000','#fff','#5f5','#e55']],
@@ -135,6 +151,8 @@
 		 /* Events */
 		 input.addEventListener('keyup', key_dispatch)
 		 themeBtn.addEventListener('click', change_theme)
+		 upBtn.addEventListener('click', history_up)
+		 dnBtn.addEventListener('click', history_down)
 		 execBtn.addEventListener('click', () => {
 			 execute()
 			 input.focus()
@@ -150,14 +168,10 @@
 		 function key_dispatch(e) {
 			 if(e.ctrlKey && e.key == 'Enter')
 				 execute()
-			 else if(e.ctrlKey && e.key == 'ArrowDown') {
-				 if(history_pointer < (history.length - 1))
-					 input.value = history[++history_pointer]
-			 }
-			 else if(e.ctrlKey && e.key == 'ArrowUp') {
-				 if(history_pointer > 0)
-					 input.value = history[--history_pointer]
-			 }
+			 else if(e.ctrlKey && e.key == 'ArrowDown')
+				 history_down()
+			 else if(e.ctrlKey && e.key == 'ArrowUp')
+				 history_up()
 		 }
 		 function execute() {
 			 const v = input.value.trim()
@@ -219,7 +233,7 @@
 		 function clear() {
 			 let i = 0
 			 result.innerHTML = ''
-			 append_to_result('\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Finding a function]: "$(\'a subset of function\'s prototype\')"\n[Clear screen]: clear()')
+			 append_to_result('\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Alt+T]: Change theme\n[Finding a function]: "$(\'a subset of function\'s prototype\')"\n[Clear screen]: clear()')
 			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
 					  my_library_functions.map(o=>`|${i++}| ${o}`).join('\n'))
 			 result.scrollTo(0,0)
@@ -257,6 +271,14 @@
 			 current_theme = (current_theme + 1) % themes.length
 			 apply_theme(themes[current_theme][1])
 			 save_current_theme()
+		 }
+		 function history_down() {
+			 if(history_pointer < (history.length - 1))
+				 input.value = history[++history_pointer]
+		 }
+		 function history_up() {
+			 if(history_pointer > 0)
+				 input.value = history[--history_pointer]
 		 }
 		</script>
 	</body>
