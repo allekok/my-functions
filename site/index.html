@@ -237,17 +237,16 @@
 				 grow_input()
 		 }
 		 function execute() {
-			 const v = input.value.trim().
-					 replace(/[“‟”〝〞]/g, '"').
-					 replace(/[’‘‛]/g, '\'')
+			 const v = input.value.trim()
 			 if(v && (v !== history[history.length-1])) {
 				 history.push(v)
 				 history_pointer = history.length-1
 			 }
 
 			 try {
-				 append_to_result(input.value + '\n<span class="c">=></span> ' +
-						  to_string(eval(input.value)))
+				 const val = input.value.replace(/[“‟”〝〞]/g, '"').replace(/[’‘‛]/g, '\'')
+				 append_to_result(val + '\n<span class="c">=></span> ' +
+						  to_string(eval(val)))
 			 }
 			 catch (e) {
 				 append_to_result(input.value + '\n<span class="e">=></span> ' + e)
