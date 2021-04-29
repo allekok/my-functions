@@ -632,8 +632,8 @@ function combinations(A, N=A.length, R='', join=(A,a)=>A+a) {
 		if(!N)
 			Rs.push(R)
 		else
-			for(const a of A)
-				_combinations(N-1, join(R,a))
+			for(const i in A)
+				_combinations(N-1, join(R,A[i]))
 	}
 	
 	let Rs = []
@@ -786,7 +786,7 @@ function lisp(str) {
 		return eval(arg.join(' '))
 	}
 	function _print(x) {
-		return display(x)
+		return append_to_result(to_string(x))
 	}
 	
 	let env_key = 0
@@ -829,7 +829,7 @@ function rtl(str) {
 
 function allekok_status() {
 	return my_server('download', 'https://allekok.ir/status.php',
-			 t => display(rtl(t)))
+			 t => append_to_result(rtl(to_string(t))))
 }
 
 function tewar(w, n=25, dicts='all', out='text') {
@@ -837,7 +837,7 @@ function tewar(w, n=25, dicts='all', out='text') {
 	const url = 'https://allekok.ir/tewar/src/backend/lookup.php'
 	return my_server('download',
 			 `${url}?q=${w}&n=${n}&dicts=${dicts}&output=${out}`,
-			 t => display(rtl(t)))
+			 t => append_to_result(rtl(to_string(t))))
 }
 
 function count_lines(str) {
