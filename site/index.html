@@ -248,8 +248,9 @@
 			 }
 
 			 try {
+				 const val = san_inp(input.value)
 				 append_to_result(val + '\n<span class="c">=></span> ' +
-						  to_string(eval(san_inp(input.value))))
+						  to_string(eval(val)))
 			 }
 			 catch (e) {
 				 append_to_result(input.value + '\n<span class="e">=></span> ' + e)
