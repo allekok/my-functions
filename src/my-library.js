@@ -8,8 +8,10 @@ function $(str) {
 	str = normalize_data(str)
 	let result = '\n'
 	for(const f of my_library_functions)
-		if(normalize_data(f).indexOf(str) !== -1)
-			result += `${f}\n`
+		if(normalize_data(f).indexOf(str) !== -1) {
+			const n = f.match(/([^\(\s]+)/)[1]
+			result += `<button type="button" class="func_btn" onclick="append_func_form_to_result(${n})">${f}</button>\n`
+		}
 	return result
 }
 

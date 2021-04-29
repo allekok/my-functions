@@ -120,6 +120,9 @@
 		 .func_form {
 			 white-space:normal;
 		 }
+		 .func_form div {
+			 white-space:pre-wrap;
+		 }
 		 .func_form .anti_res {
 			 display:flex;
 			 margin:.5rem 0;
@@ -304,7 +307,7 @@
 					  my_library_functions.map(o => {
 						  const n = o.match(/([^\(\s]+)/)[1]
 						  return `|${i++}| <button type='button' class='func_btn' 
-						  onclick='append_func_form_to_result(eval("${n}"))'>${o}</button>`
+						  onclick='append_func_form_to_result(${n})'>${o}</button>`
 					  }).join('\n'))
 			 result.scrollTo(0,0)
 			 input.focus()
