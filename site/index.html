@@ -102,7 +102,7 @@
 			 font-size:2rem;
 			 width:100%;
 			 max-width:12%;
-			 min-width:2.5rem;
+			 min-width:4rem;
 		 }
 		 .rtl {
 			 display:inline-block;
@@ -135,7 +135,7 @@
 		 }
 		 .func_form_submit_sec {
 			 max-width:10%;
-			 min-width:3rem;
+			 min-width:6rem;
 			 width:100%;
 		 }
 		 .func_form input[type=text] {
@@ -236,6 +236,10 @@
 			 else if(e.altKey && e.code == 'ArrowUp')
 				 grow_input()
 		 }
+		 function san_inp(str) {
+			 return str.replace(/[“‟”〝〞]/g, '"').
+				    replace(/[’‘‛]/g, '\'')
+		 }
 		 function execute() {
 			 const v = input.value.trim()
 			 if(v && (v !== history[history.length-1])) {
@@ -244,9 +248,8 @@
 			 }
 
 			 try {
-				 const val = input.value.replace(/[“‟”〝〞]/g, '"').replace(/[’‘‛]/g, '\'')
 				 append_to_result(val + '\n<span class="c">=></span> ' +
-						  to_string(eval(val)))
+						  to_string(eval(san_inp(input.value))))
 			 }
 			 catch (e) {
 				 append_to_result(input.value + '\n<span class="e">=></span> ' + e)
@@ -430,7 +433,7 @@
 			 const func = eval(form_el.getAttribute('func'))
 			 let args = []
 			 form_el.querySelectorAll('input').forEach(inp => {
-				 args.push(eval(inp.value))
+				 args.push(eval(san_inp(inp.value)))
 			 })
 			 
 			 const result = func(...args)
