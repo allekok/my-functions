@@ -53,23 +53,25 @@
 			 padding:.5rem;
 			 border-top:1px solid
 		 }
-		 #input {
+		 input, textarea {
 			 -webkit-appearance:none;
 			 outline:0;
 			 border-radius:0;
 			 box-shadow:none;
-			 border:0;
 			 background:none;
 			 color:inherit;
-			 border-top:1px solid;
 			 padding:.5rem;
 			 font-family:inherit;
-			 font-size:1.1rem;
+			 font-size:inherit;
 			 font-weight:inherit;
+			 box-sizing:border-box;
+		 }
+		 #input {
+			 border:0;
+			 border-top:1px solid;
 			 max-width:80%;
 			 width:80%;
 			 height:100%;
-			 box-sizing:border-box;
 		 }
 		 #input:focus {
 			 border:0;
@@ -113,6 +115,40 @@
 		 }
 		 ::-webkit-scrollbar-track {
 			 margin:.1rem 0;
+		 }
+		 .func_form {
+			 white-space:normal;
+		 }
+		 .func_form fieldset {
+			 display:flex;
+		 }
+		 .func_form .input_area {
+			 display:flex;
+			 flex-direction:column;
+			 width:90%;
+			 padding-right:1rem;
+		 }
+		 .func_form_submit_sec {
+			 width:10%;
+		 }
+		 .func_form input[type=text] {
+			 border:0;
+			 border-bottom:1px solid;
+			 width:100%;
+			 margin-bottom:1rem;
+		 }
+		 .func_form input[type=text]:focus {
+			 border-bottom:2px solid;
+		 }
+		 .func_form button[type=submit] {
+			 font-family:"MaterialIcons";
+			 font-size:2rem;
+			 width:100%;
+			 height:100%;
+		 }
+		 .func_btn {
+			 background:none;
+			 padding:0 .1rem;
 		 }
 		</style>
 		<style id="theme"></style>
@@ -193,7 +229,9 @@
 				 grow_input()
 		 }
 		 function execute() {
-			 const v = input.value.trim()
+			 const v = input.value.trim().
+					 replace(/[“‟”〝〞]/g, '"').
+					 replace(/[’‘‛]/g, '\'')
 			 if(v && (v !== history[history.length-1])) {
 				 history.push(v)
 				 history_pointer = history.length-1
@@ -222,9 +260,9 @@
 				 else if(typeof(x) == 'symbol')
 					 return x
 				 else if(typeof(x) == 'string') 
-					 return `'${x}'`
+					 return `'${x.replace(/'/g, '\\\'')}'`
 				 else if(typeof(x) == 'function')
-					 return x.toString()
+					 return to_string(x.toString(), level)
 				 else
 					 return x
 			 }
@@ -232,7 +270,9 @@
 				 let str = '['
 				 for(const o of x)
 					 str += to_string(o, level) + ','
-				 str = str.substr(0, str.length-1) + ']'
+				 if(str.length > 1)
+					 str = str.substr(0, str.length-1)
+				 str += ']'
 				 return str
 			 }
 			 else if(typeof(x) == 'object') {
@@ -241,9 +281,11 @@
 				 for(let k in x) {
 					 let v = to_string(x[k], level+1)
 					 k = to_string(k, level)
-					 str += `${tab}\t${k}:${v},\n`
+					 str += `${tab}\t${k}: ${v},\n`
 				 }
-				 str = str.substr(0, str.length-2) + '\n' + tab + '}'
+				 if(str.length > 2)
+					 str = str.substr(0, str.length-2)
+				 str = str + '\n' + tab + '}'
 				 return str
 			 }
 			 else
@@ -254,7 +296,11 @@
 			 result.innerHTML = ''
 			 append_to_result('\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Alt+T]: Change theme\n[Finding a function]: "$(\'a subset of function\'s prototype\')"\n[Clear screen]: clear()')
 			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
-					  my_library_functions.map(o=>`|${i++}| ${o}`).join('\n'))
+					  my_library_functions.map(o => {
+						  const n = o.match(/([^\(\s]+)/)[1]
+						  return `|${i++}| <button type='button' class='func_btn' 
+						  onclick='append_func_form_to_result(eval("${n}"))'>${o}</button>`
+					  }).join('\n'))
 			 result.scrollTo(0,0)
 			 input.focus()
 		 }
@@ -262,12 +308,11 @@
 			 clear()
 		 }
 		 function append_to_result(str) {
-			 result.innerHTML += `<p>[${nth}] ${str}</p>`
+			 const p = document.createElement("P")
+			 p.innerHTML = `[${nth}] ${str}`
+			 result.appendChild(p)
 			 result.scrollTo(0, result.scrollHeight)
 			 nth++
-		 }
-		 function display(str) {
-			 append_to_result(to_string(str))
 		 }
 		 function apply_theme(theme) {
 			 document.getElementById('theme').innerHTML = `
@@ -278,7 +323,8 @@
 			 .e { color: ${theme[3]} }
 			 ::selection { background: ${theme[2]}; color: ${theme[0]} }
 			 ::-webkit-scrollbar-track { background: ${theme[0]} }
-			 ::-webkit-scrollbar-thumb { background: ${theme[2]} }`
+			 ::-webkit-scrollbar-thumb { background: ${theme[2]} }
+			 .func_btn { color: ${theme[1]} }`
 		 }
 		 function save_current_theme() {
 			 localStorage.setItem('theme', current_theme)
@@ -300,14 +346,90 @@
 				 input.value = history[--history_pointer]
 		 }
 		 function grow_input() {
-			 current_input_height += 15
+			 current_input_height += 20
 			 inputDiv.style.height = current_input_height + '%'
 		 }
 		 function shrink_input() {
-			 current_input_height -= 15
+			 current_input_height -= 20
 			 if(current_input_height < 15)
 				 current_input_height = 15
 			 inputDiv.style.height = current_input_height + '%'
+		 }
+		 function get_func_prototype(proc) {
+			 const str = proc.toString()
+			 const obj = str.match(/^function\s+([^\(\s]+)\s*(.+)\s*\{/)
+			 const name = [obj[1]]
+			 let args = obj[2].trim().substring(1,obj[2].length-2).split(/,/)
+			 for(let i = 0, o = 0; i < args.length; i++) {
+				 for(const j in args[i]) {
+					 if('\'"({['.indexOf(args[i][j]) !== -1)
+						 o++
+					 if('\'")}]'.indexOf(args[i][j]) !== -1)
+						 o--
+				 }
+				 while(o > 0) {
+					 args[i] += ',' + args[++i]
+					 for(const j in args[i]) {
+						 if('\'")}]'.indexOf(args[i][j]) !== -1)
+							 o--
+					 }
+					 args[i] = undefined
+				 }
+			 }
+			 args = args.filter(x => x !== undefined)
+			 for(const i in args) {
+				 args[i] = args[i].trim()
+				 const j = args[i].indexOf('=')
+				 if(j === -1)
+					 args[i] = [args[i]]
+				 else
+					 args[i] = [args[i].substring(0,j), args[i].substring(j+1)]
+			 }
+			 return name.concat(args)
+		 }
+		 function func_to_form(proc) {
+			 const args = get_func_prototype(proc)
+			 const name = args.shift()
+			 let html = `<form class='func_form' onsubmit='event.preventDefault();run_func_form(this)' func='${name}'>
+				 <fieldset>
+					 <legend>${name}</legend>
+			             	 <section class='input_area'>
+			 `
+			 for(const arg of args) {
+				 const n = arg[0]
+				 const r = Math.random()
+				 const v = arg[1] !== undefined ?
+					   arg[1].replace(/'/g, '"') :
+					   ''
+					   html += `
+				 <label for='${n}_${r}'>${n}:</label>
+				 <input type='text' id='${n}_${r}' value='${v}'>
+					   `
+			 }
+			 html += `
+                         <div></div>
+                         </section>
+                         <section class='func_form_submit_sec'>
+                         <button type='submit'>play_circle_filled</button>
+                         </section>
+			 </fieldset>
+			 </form>`
+			 
+			 return html
+		 }
+		 function run_func_form(form_el) {
+			 const func = eval(form_el.getAttribute('func'))
+			 let args = []
+			 form_el.querySelectorAll('input').forEach(inp => {
+				 args.push(eval(inp.value))
+			 })
+			 
+			 const result = func(...args)
+			 form_el.querySelector('div').innerHTML = to_string(result)
+			 return result
+		 }
+		 function append_func_form_to_result(func) {
+			 append_to_result(func_to_form(func))
 		 }
 		</script>
 	</body>
