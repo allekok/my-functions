@@ -843,7 +843,9 @@ function tewar(w, n=25, dicts='all', out='text') {
 }
 
 function count_lines(str) {
-	let n = 0
+	if(str.length == 0)
+		return 0
+	let n = 1
 	for(const i in str)
 		if(str[i] == '\n')
 			n++
