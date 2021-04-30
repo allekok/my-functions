@@ -258,7 +258,7 @@
 		 }
 		 function to_string(x, level=0) {
 			 if(x === null)
-				 return x
+				 return 'null'
 			 else if(typeof(x) != 'object') {
 				 if(x === undefined)
 					 return x
@@ -273,16 +273,16 @@
 				 else if(typeof(x) == 'string') 
 					 return `'${x.replace(/'/g, '\\\'')}'`
 				 else if(typeof(x) == 'function')
-					 return to_string(x.toString(), level)
+					 return x.toString()
 				 else
 					 return x
 			 }
 			 else if(Array.isArray(x)) {
 				 let str = '['
 				 for(const o of x)
-					 str += to_string(o, level) + ','
+					 str += to_string(o, level) + ', '
 				 if(str.length > 1)
-					 str = str.substr(0, str.length-1)
+					 str = str.substr(0, str.length-2)
 				 str += ']'
 				 return str
 			 }
@@ -305,12 +305,12 @@
 		 function clear() {
 			 let i = 0
 			 result.innerHTML = ''
-			 append_to_result('\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Alt+T]: Change theme\n[Finding a function]: "$(\'a subset of function\'s prototype\')"\n[Clear screen]: clear()')
+			 append_to_result('\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Alt+T]: Change theme\n[Finding a function]: "$(\'a subset of function\'s prototype\')"\n[Convert function to form] "func_form(function)"\n[Clear screen]: clear()')
 			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
 					  my_library_functions.map(o => {
 						  const n = o.match(/([^\(\s]+)/)[1]
 						  return `|${i++}| <button type='button' class='func_btn' 
-						  onclick='append_func_form_to_result(${n})'>${o}</button>`
+						  onclick='func_form(${n})'>${o}</button>`
 					  }).join('\n'))
 			 result.scrollTo(0,0)
 			 input.focus()
@@ -398,7 +398,7 @@
 			 }
 			 return name.concat(args)
 		 }
-		 function func_to_form(proc) {
+		 function convert_func_to_form(proc) {
 			 const args = get_func_prototype(proc)
 			 const name = args.shift()
 			 let html = `<form class='func_form' onsubmit='event.preventDefault();run_func_form(this)' func='${name}'>
@@ -441,8 +441,8 @@
 			 form_el.querySelector('div').innerHTML = to_string(result)
 			 return result
 		 }
-		 function append_func_form_to_result(func) {
-			 append_to_result(func_to_form(func))
+		 function func_form(func) {
+			 append_to_result(convert_func_to_form(func))
 		 }
 		</script>
 	</body>
