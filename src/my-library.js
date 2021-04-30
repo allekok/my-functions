@@ -1,25 +1,46 @@
 function $(str) {
 	function normalize_data(str) {
-		str = str.trim()
 		str = str.replace(/[\s_\-,\.\?!\*]+/g, '')
 		str = str.toUpperCase()
 		return str
 	}
 	str = normalize_data(str)
-	let result = '\n'
-	for(const f of my_library_functions)
-		if(normalize_data(f).indexOf(str) !== -1) {
-			const n = f.match(/([^\(\s]+)/)[1]
-			result += `<button type="button" class="func_btn" onclick="append_func_form_to_result(${n})">${f}</button>\n`
-		}
+	let result = ''
+	for(const f of my_library_functions) {
+		if(normalize_data(f).indexOf(str) === -1)
+			continue
+		const n = f.match(/([^\(\s]+)/)[1]
+		result += `<button type="button" class="func_btn"`
+		result += ` onclick="func_form(${n})">${f}</button>\n`
+	}
 	return result
 }
 
 function reverse_string(str) {
-	let revStr = ''
-	for(let i = str.length - 1; str[i] !== undefined; i--)
-		revStr += str[i]
-	return revStr
+	let rev = ''
+	for(let i = str.length - 1; i >= 0; i--)
+		rev += str[i]
+	return rev
+}
+
+function is_int(x) {
+	return parseFloat(x) == parseInt(x)
+}
+
+function is_float(x) {
+	return !is_int(x)
+}
+
+function is_array(x) {
+	return Array.isArray(x)
+}
+
+function is_object(x) {
+	return typeof(x) == 'object'
+}
+
+function array_length(x) {
+	return is_array(x) && x.length
 }
 
 function decimal_integer_to_base_n(num, n) {
@@ -30,31 +51,29 @@ function decimal_integer_to_base_n(num, n) {
 	return x
 }
 
-function decimal_floating_point_to_base_n(num, n, precision) {
-	let x = ''
-	let int
+function decimal_floating_point_to_base_n(num, n, precision=101) {
+	let x = '', int
 	do {
 		num *= n
 		int = parseInt(num)
 		num -= int
 		x += decimal_to_character(int)
-	} while(--precision > 0 && num)
+	} while(num && --precision)
 	return x
 }
 
 function decimal_to_base_n(num, n, precision=101) {
-	if(n < 2) return x
-	let int = parseInt(num)
-	let fp = num - int
-	int = decimal_integer_to_base_n(int, n)
-	fp = decimal_floating_point_to_base_n(fp, n, precision)
-	return `${int}.${fp}`
+	let x, int = parseInt(num)
+	x = decimal_integer_to_base_n(int, n)
+	if(is_float(num))
+		x += decimal_floating_point_to_base_n(num - int, n, precision)
+	return x
 }
 
 function decimal_to_character(num) {
 	if(num >= 10 && num <= 35)
 		return String.fromCharCode(num + 55)
-	return num.toString()
+	return String(num)
 }
 
 function decimal_to_binary(num) {
@@ -70,17 +89,17 @@ function decimal_to_hexadecimal(num) {
 }
 
 function base_n_integer_to_decimal(x, n) {
-	let num = 0
-	for(let i = x.length-1, p = 1; i >= 0; i--, p = Math.pow(n, x.length - i - 1))
-		num += character_to_decimal(x[i]) * p
-	return num
+	let N = 0
+	for(let i = 0; i < x.length; i++)
+		N += character_to_decimal(x[i]) * Math.pow(n, x.length - 1 - i)
+	return N
 }
 
 function base_n_floating_point_to_decimal(x, n) {
-	let num = 0
-	for(let i = 0, p = 1 / n; i < x.length; i++, p = 1 / Math.pow(n, i + 1))
-		num += character_to_decimal(x[i]) * p
-	return num
+	let N = 0
+	for(let i = 0; i < x.length; i++)
+		N += character_to_decimal(x[i]) / Math.pow(n, i + 1)
+	return N
 }
 
 function base_n_to_decimal(x, n) {
@@ -95,7 +114,7 @@ function character_to_decimal(char) {
 	char = char.toUpperCase()
 	if(char >= 'A' && char <= 'Z')
 		return char.charCodeAt(0) - 55
-	return parseInt(char)
+	return Number(char)
 }
 
 function binary_to_decimal(bin) {
@@ -134,18 +153,21 @@ function octal_to_hexadecimal(octal) {
 	return decimal_to_hexadecimal(octal_to_decimal(octal))
 }
 
-function sum(f, array) {
-	let n = 0
-	for(const el of array)
-		n += typeof(el) == 'object' ? sum(f, el) : f(el)
-	return n
+function join(init, op) {
+	return function _(f, arr) {
+		let n = init
+		for(const a of arr)
+			n = op(n, is_object(a) ? _(f, a) : f(a))
+		return n
+	}
 }
 
-function product(f, array) {
-	let n = 1
-	for(const el of array)
-		n *= typeof(el) == 'object' ? product(f, el) : f(el)
-	return n
+function sum(f, arr) {
+	return join(0, (x,y) => x+y)(f, arr)
+}
+
+function product(f, arr) {
+	return join(1, (x,y) => x*y)(f, arr)
 }
 
 function parallel_resistors_equivalent(resistors) {
@@ -157,14 +179,13 @@ function series_resistors_equivalent(resistors) {
 }
 
 function extend_left_by_character_n_times(str, char, n) {
-	n -= str.length
-	while(n-- > 0)
+	while(n-- > str.length)
 		str = char + str
 	return str
 }
 
 function decimal_to_bcd(num, num_of_bits=8) {
-	num = String(num)
+	num = String(parseInt(num))
 	let bin = ''
 	for(let i = 0; num[i] !== undefined; i++)
 		bin += extend_left_by_character_n_times(
@@ -177,24 +198,17 @@ function decimal_to_packed_bcd(num) {
 }
 
 function is_matrix(A) {
-	if(typeof(A) != 'object')
-		return false
-	if(matrix_rows(A) <= 0)
-		return false
-
-	const columns = matrix_columns(A)
-	
-	for(let i = 0; i < matrix_rows(A); i++) {
-		if(typeof(A[i]) != 'object')
+	const rows = matrix_rows(A)
+	const cols = matrix_columns(A, 0)
+	if(!rows || !cols) return false
+	for(let i = 1; i < rows; i++)
+		if(matrix_columns(A, i) != cols)
 			return false
-		if(matrix_columns(A,i) != columns)
-			return false
-	}
 	return true
 }
 
 function matrix_to_string(A) {
-	let string = '\n'
+	let string = ''
 	for(const i in A) {
 		for(const j in A[i])
 			string += `${A[i][j]}\t`
@@ -204,29 +218,27 @@ function matrix_to_string(A) {
 }
 
 function matrices_to_string(As) {
-	let string = '\n'
-	for(const i in As) {
+	let string = ''
+	for(const i in As)
 		string += `${i}:${matrix_to_string(As[i])}\n\n`
-	}
 	return string
 }
 
 function string_to_matrix(str) {
-	return str.trim().split(/\n+/).map(
-		r => r.trim().split(/[ \t]+/).map(
-			n => Number(n)))
+	return str.trim().replace(/[\s]{2,}/g, '$1').split(/\n+/).map(
+		c => c.trim().split(/\s/).map(n => Number(n)))
 }
 
 function matrix_rows(A) {
-	return A.length
+	return array_length(A)
 }
 
 function matrix_columns(A, i=0) {
-	return A[i].length
+	return matrix_rows(A) && array_length(A[i])
 }
 
 function matrix_dimentions(A) {
-	return [matrix_rows(A), matrix_columns(A)]
+	return is_matrix(A) && [matrix_rows(A), matrix_columns(A)]
 }
 
 function apply_proc_to_matrix_elements(proc, A) {
@@ -252,10 +264,9 @@ function subtract_matrices(A, B) {
 }
 
 function multiply_matrix(A, x) {
-	if(typeof(x) != 'object')
-		return multiply_matrix_by_scalar(A, x)
-	else
-		return multiply_matrices(A, x)
+	return (is_array(x) &&
+		multiply_matrices(A, x)) ||
+		multiply_matrix_by_scalar(A, x)
 }
 
 function multiply_matrix_by_scalar(A, n) {
@@ -264,9 +275,9 @@ function multiply_matrix_by_scalar(A, n) {
 
 function multiply_matrices(A, B) {
 	if(matrix_columns(A) != matrix_rows(B))
-		return `Can't be done.
-# of columns[${matrix_columns(A)}] of A != # of rows[${matrix_rows(B)}] of B`
-
+		return `Can't be done. 
+# of A columns[${matrix_columns(A)}] != # of B rows[${matrix_rows(B)}]`
+	
 	let C = []
 	for(const i in A) {
 		C[i] = []
