@@ -387,7 +387,7 @@
 					 args[i] = undefined
 				 }
 			 }
-			 args = args.filter(x => x !== undefined)
+			 args = args.filter(x => x !== undefined && x)
 			 for(const i in args) {
 				 args[i] = args[i].trim()
 				 const j = args[i].indexOf('=')
