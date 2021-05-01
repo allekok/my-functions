@@ -367,36 +367,53 @@
 			 inputDiv.style.height = current_input_height + '%'
 		 }
 		 function get_func_prototype(proc) {
-			 const str = proc.toString()
-			 const obj = str.match(/^function\s+([^\(\s]+)\s*(.+)\s*\{/)
+			 /* Not complete and ugly. sorry. */
+			 const _proc = typeof(proc) == 'string' ? eval(proc) : proc
+			 const str = _proc.toString()
+			 if(str.match(/\{\s+\[native code\]\s+\}/)) {
+				 /* Native Code */
+				 let args = [typeof(proc) == 'string' ?
+					     proc : str.match(/function\s+(.+)\(/)[1]]
+				 for(let i = 0; i < _proc.length; i++)
+					 args.push([`param ${i}`])
+				 return args
+			 }
+			 const obj = str.match(/^function\s+([^\(\s]+)\s*\((.*)\)\s*\{/)
 			 const name = [obj[1]]
-			 let args = obj[2].trim().substring(1,obj[2].length-2).split(/,/)
+			 let args = obj[2].split(',')
+			 let _args = []
 			 for(let i = 0, o = 0; i < args.length; i++) {
 				 for(const j in args[i]) {
-					 if('\'"({['.indexOf(args[i][j]) !== -1)
+					 const c = args[i][j]
+					 if('({['.indexOf(c) !== -1)
 						 o++
-					 if('\'")}]'.indexOf(args[i][j]) !== -1)
-						 o--
+						   else if(')}]'.indexOf(c) !== -1)
+							   o--
 				 }
 				 while(o > 0) {
 					 args[i] += ',' + args[++i]
 					 for(const j in args[i]) {
-						 if('\'")}]'.indexOf(args[i][j]) !== -1)
+						 const c = args[i][j]
+						 if(')}]'.indexOf(c) !== -1)
 							 o--
 					 }
 					 args[i] = undefined
 				 }
 			 }
-			 args = args.filter(x => x !== undefined && x)
 			 for(const i in args) {
+				 if(args[i] === undefined)
+					 continue
 				 args[i] = args[i].trim()
+				 if(!args[i])
+					 continue
 				 const j = args[i].indexOf('=')
 				 if(j === -1)
-					 args[i] = [args[i]]
+					 _args.push([args[i]])
 				 else
-					 args[i] = [args[i].substring(0,j), args[i].substring(j+1)]
+					 _args.push([args[i].substring(0, j),
+						     args[i].substring(j + 1)])
 			 }
-			 return name.concat(args)
+			 return name.concat(_args)
 		 }
 		 function convert_func_to_form(proc) {
 			 const args = get_func_prototype(proc)
@@ -431,13 +448,15 @@
 			 return html
 		 }
 		 function run_func_form(form_el) {
-			 const func = eval(form_el.getAttribute('func'))
+			 const func_name = form_el.getAttribute('func')
+			 const func = eval(func_name)
 			 let args = []
 			 form_el.querySelectorAll('input').forEach(inp => {
 				 args.push(eval(san_inp(inp.value)))
 			 })
-			 
-			 const result = func(...args)
+			 let result = (idx = func_name.lastIndexOf('.')) !== -1 ?
+				      func.call(eval(func_name.substring(0, idx)), ...args) :
+				      func(...args)
 			 form_el.querySelector('div').innerHTML = to_string(result)
 			 return result
 		 }
