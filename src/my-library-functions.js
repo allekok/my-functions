@@ -103,7 +103,7 @@ const my_library_functions = [
 	'reverse_string(str)',
 	'rtl(str)',
 	'series_resistors_equivalent(resistors)',
-	'server(url, func, arg, callback, keyword=\'request\')',
+	'server(url, func, arg, callback, keyword=\'request\', method=\'post\')',
 	'solve_quadratic_equation(a, b, c)',
 	'string_to_matrix(str)',
 	'subtract_matrices(A, B)',

@@ -808,7 +808,7 @@ function lisp(str) {
 	return _eval(parse(str), global_env)
 }
 
-function server(url, func, arg, callback, keyword='request') {
+function server(url, func, arg, callback, keyword='request', method='post') {
 	function make_object() {
 		return {
 			func: func,
@@ -822,9 +822,15 @@ function server(url, func, arg, callback, keyword='request') {
 	const request = make_request(make_object())
 	const x = new XMLHttpRequest
 	x.onload = e => callback(x)
-	x.open('post', url)
-	x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-	x.send(request)
+	if(method == 'post') {
+		x.open(method, url)
+		x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+		x.send(request)
+	}
+	else {
+		x.open(method, url + '?' + request)
+		x.send()
+	}
 }
 
 function my_server(func, arg, callback) {
