@@ -81,7 +81,7 @@
 		 #inputDiv {
 			 display:flex;
 			 width:100%;
-			 height:20%;
+			 height:15%;
 		 }
 		 button {
 			 -webkit-appearance:none;
@@ -357,11 +357,11 @@
 				 input.value = history[--history_pointer]
 		 }
 		 function grow_input() {
-			 current_input_height += 20
+			 current_input_height += 30
 			 inputDiv.style.height = current_input_height + '%'
 		 }
 		 function shrink_input() {
-			 current_input_height -= 20
+			 current_input_height -= 30
 			 if(current_input_height < 15)
 				 current_input_height = 15
 			 inputDiv.style.height = current_input_height + '%'
