@@ -936,3 +936,15 @@ function test_function(proc, inputs) {
 function truth_table(proc) {
 	return test_function(proc, [true,false])
 }
+
+function make_stream(init, proc) {
+	return [proc(init), () => make_stream(proc(init), proc)]
+}
+
+function scar(stream) {
+	return stream[0]
+}
+
+function scdr(stream) {
+	return stream[1]()
+}
