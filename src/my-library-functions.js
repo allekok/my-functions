@@ -107,6 +107,7 @@ const my_library_functions = [
 	'scdr(stream)',
 	'series_resistors_equivalent(resistors)',
 	'server(url, func, arg, callback, keyword=\'request\', method=\'post\')',
+	'snth(stream, n)',
 	'solve_quadratic_equation(a, b, c)',
 	'string_to_matrix(str)',
 	'subtract_matrices(A, B)',

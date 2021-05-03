@@ -948,3 +948,9 @@ function scar(stream) {
 function scdr(stream) {
 	return stream[1]()
 }
+
+function snth(stream, n) {
+	for(let i = 0; i < n; i++)
+		stream = scdr(stream)
+	return stream
+}
