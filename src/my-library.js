@@ -938,7 +938,7 @@ function truth_table(proc) {
 }
 
 function make_stream(init, proc) {
-	return [proc(init), () => make_stream(proc(init), proc)]
+	return [init, () => make_stream(proc(init), proc)]
 }
 
 function scar(stream) {
