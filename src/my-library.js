@@ -154,10 +154,10 @@ function octal_to_hexadecimal(octal) {
 }
 
 function join(init, op) {
-	return function _(f, arr) {
+	return function _(f, A) {
 		let n = init
-		for(const a of arr)
-			n = op(n, is_object(a) ? _(f, a) : f(a))
+		for(const i in A)
+			n = op(n, is_object(A[i]) ? _(f, A[i]) : f(A[i]))
 		return n
 	}
 }
