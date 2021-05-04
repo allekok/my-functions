@@ -35,6 +35,9 @@
 			 font-size:15px;
 			 line-height:1.4;
 		 }
+		 i {
+			 font-style:normal;
+		 }
 		 #shell {
 			 display:flex;
 			 flex-direction:column;
@@ -158,6 +161,10 @@
 			 padding:0 .1rem;
 			 text-align:left;
 		 }
+		 .icon {
+			 font-family:"MaterialIcons";
+			 vertical-align:bottom;
+		 }
 		</style>
 		<style id="theme"></style>
 	</head>
@@ -237,6 +244,10 @@
 				 grow_input()
 			 else if(e.altKey && e.code == 'KeyS')
 				 func_form($)
+			 else if(e.altKey && e.code == 'Backslash')
+				 func_form(func_form)
+			 else if(e.altKey && e.code == 'KeyC')
+				 clear()
 		 }
 		 function san_inp(str) {
 			 return str.replace(/[“‟”〝〞]/g, '"').
@@ -307,7 +318,7 @@
 		 function clear() {
 			 let i = 0
 			 result.innerHTML = ''
-			 append_to_result('\n[Ctrl+Enter]: Execution\n[Ctrl+Up]: Going backward in history\n[Ctrl+Down]: Going foreward in history\n[Alt+T]: Change theme\n[Finding a function]: "$(\'a subset of function\'s prototype\')"\n[Convert function to form] "func_form(function)"\n[Clear screen]: clear()')
+			 append_to_result('\n[Ctrl <i class="icon c">subdirectory_arrow_left</i>]: Execution\n[Ctrl <i class="icon c">arrow_upward</i>]: Going backward in history\n[Ctrl <i class="icon c">arrow_downward</i>]: Going foreward in history\n[Alt <i class="icon c">arrow_upward</i>]: Grow input\n[Alt <i class="icon c">arrow_downward</i>]: Shrink input\n[Alt <i class="c">T</i>]: Toggle theme\n[Alt <i class="c">S</i>]: Search in functions\n[Alt <i class="c">C</i>]: Clear screen\n[Alt <i class="c">\\</i>]: Function -> Form')
 			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
 					  my_library_functions.map(o => {
 						  const n = o.match(/([^\(\s]+)/)[1]
