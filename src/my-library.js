@@ -954,3 +954,37 @@ function snth(stream, n) {
 		stream = scdr(stream)
 	return stream
 }
+
+function factors(n, proc=n=>true, limit=null) {
+	limit = limit || n
+	let factors = []
+	for(let i = 1; i <= limit; i++)
+		n % i == 0 && proc(i) && factors.push(i)
+	return factors
+}
+
+function nonprime_factors(n) {
+	return factors(n, is_nonprime)
+}
+
+function prime_factors(n) {
+	const f = factors(n, is_prime, Math.sqrt(n))
+	return f.length == 0 ? [n] : f
+}
+
+function is_prime(n) {
+	if(n < 2)
+		return false
+	if(n == 2)
+		return true
+	if(n % 2 == 0)
+		return false
+	for(let i = 3; i <= Math.sqrt(n); i += 2)
+		if(n % i == 0)
+			return false
+	return true
+}
+
+function is_nonprime(n) {
+	return !is_prime(n)
+}
