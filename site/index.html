@@ -235,6 +235,8 @@
 				 shrink_input()
 			 else if(e.altKey && e.code == 'ArrowUp')
 				 grow_input()
+			 else if(e.altKey && e.code == 'KeyS')
+				 func_form($)
 		 }
 		 function san_inp(str) {
 			 return str.replace(/[“‟”〝〞]/g, '"').
@@ -418,7 +420,9 @@
 		 function convert_func_to_form(proc) {
 			 const args = get_func_prototype(proc)
 			 const name = args.shift()
-			 let html = `<form class='func_form' onsubmit='event.preventDefault();run_func_form(this)' func='${name}'>
+			 const rand = parseInt(Math.random() * 1e10)
+			 const id = `${name.replace(/\$/g, 's-s')}_${rand}`
+			 let html = `<form class='func_form' id='${id}' onsubmit='event.preventDefault();run_func_form(this)' func='${name}'>
 				 <fieldset>
 					 <legend>${name}</legend>
 					 <section class='anti_res'>
@@ -426,7 +430,7 @@
 			 `
 			 for(const arg of args) {
 				 const n = arg[0]
-				 const r = Math.random()
+				 const r = parseInt(Math.random() * 1e10)
 				 const v = arg[1] !== undefined ?
 					   arg[1].replace(/'/g, '"') :
 					   ''
@@ -445,7 +449,7 @@
 			 </fieldset>
 			 </form>`
 			 
-			 return html
+			 return [id, html]
 		 }
 		 function run_func_form(form_el) {
 			 const func_name = form_el.getAttribute('func')
@@ -461,7 +465,11 @@
 			 return result
 		 }
 		 function func_form(func) {
-			 append_to_result(convert_func_to_form(func))
+			 const o = convert_func_to_form(func)
+			 const id = o[0]
+			 const html = o[1]
+			 append_to_result(html)
+			 result.querySelector(`#${id} input`).focus()
 		 }
 		</script>
 	</body>
