@@ -911,7 +911,7 @@ function noxor_gate(a, b) {
 
 function false_gate(a, b) {
 	/* !a = !b = 1 */
-	return and_gate(not_gate(a), not_gate(b))
+	return not_gate(or_gate(a, b))
 }
 
 function true_false_gate(a, b) {
