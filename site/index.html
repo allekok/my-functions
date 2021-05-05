@@ -72,8 +72,7 @@
 		 #input {
 			 border:0;
 			 border-top:1px solid;
-			 max-width:76%;
-			 width:76%;
+			 width:100%;
 			 height:100%;
 		 }
 		 #input:focus {
@@ -84,7 +83,7 @@
 		 #inputDiv {
 			 display:flex;
 			 width:100%;
-			 height:15%;
+			 height:20%;
 		 }
 		 button {
 			 -webkit-appearance:none;
@@ -95,16 +94,16 @@
 			 border:0;
 			 outline:0;
 		 }
-		 #codeBtns button, #lookBtns button {
+		 #codeBtns button, #lookBtns button, #miscBtns button {
 			 width:100%;
 		 }
-		 #codeBtns, #lookBtns {
+		 #codeBtns, #lookBtns, #miscBtns {
 			 display:flex;
 			 flex-direction:column;
 			 font-family:"MaterialIcons";
 			 font-size:2rem;
 			 width:100%;
-			 max-width:12%;
+			 max-width:4rem;
 			 min-width:4rem;
 		 }
 		 .rtl {
@@ -183,6 +182,11 @@
 					<button type="button" id="themeBtn">color_lens</button>
 					<button type="button" id="shrinkBtn">-</button>
 				</div>
+				<div id="miscBtns">
+					<button type="button" id="searchBtn">search</button>
+					<button type="button" id="ffBtn">input</button>
+					<button type="button" id="clrBtn">clear_all</button>
+				</div>
 			</div>
 		</div>
 
@@ -199,6 +203,9 @@
 		 const dnBtn = document.querySelector('#dnBtn')
 		 const growBtn = document.querySelector('#growBtn')
 		 const shrinkBtn = document.querySelector('#shrinkBtn')
+		 const searchBtn = document.querySelector('#searchBtn')
+		 const ffBtn = document.querySelector('#ffBtn')
+		 const clrBtn = document.querySelector('#clrBtn')
 		 const themes = [
 			 ['light', ['#fff','#000','#00e','#e00']],
 			 ['dark',  ['#000','#fff','#5f5','#e55']],
@@ -218,6 +225,9 @@
 		 dnBtn.addEventListener('click', history_down)
 		 growBtn.addEventListener('click', grow_input)
 		 shrinkBtn.addEventListener('click', shrink_input)
+		 clrBtn.addEventListener('click', clear)
+		 ffBtn.addEventListener('click', e => func_form(func_form))
+		 searchBtn.addEventListener('click', e => func_form($))
 		 execBtn.addEventListener('click', () => {
 			 execute()
 			 input.focus()
@@ -370,13 +380,13 @@
 				 input.value = history[--history_pointer]
 		 }
 		 function grow_input() {
-			 current_input_height += 30
+			 current_input_height += 40
 			 inputDiv.style.height = current_input_height + '%'
 		 }
 		 function shrink_input() {
-			 current_input_height -= 30
-			 if(current_input_height < 15)
-				 current_input_height = 15
+			 current_input_height -= 40
+			 if(current_input_height < 20)
+				 current_input_height = 20
 			 inputDiv.style.height = current_input_height + '%'
 		 }
 		 function get_func_prototype(proc) {
