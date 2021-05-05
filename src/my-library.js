@@ -968,8 +968,7 @@ function nonprime_factors(n) {
 }
 
 function prime_factors(n) {
-	const f = factors(n, is_prime, Math.sqrt(n))
-	return f.length == 0 ? [n] : f
+	return factors(n, is_prime)
 }
 
 function is_prime(n) {
