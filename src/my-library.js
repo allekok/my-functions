@@ -154,28 +154,28 @@ function octal_to_hexadecimal(octal) {
 }
 
 function join(init, op) {
-	return function _(f, A) {
+	return function _(A, f) {
 		let n = init
 		for(const i in A)
-			n = op(n, is_object(A[i]) ? _(f, A[i]) : f(A[i]))
+			n = op(n, is_object(A[i]) ? _(A[i], f) : f(A[i]))
 		return n
 	}
 }
 
-function sum(f, arr) {
-	return join(0, (x,y) => x+y)(f, arr)
+function sum(arr, f=n=>n) {
+	return join(0, (N,n) => N+n)(arr, f)
 }
 
-function product(f, arr) {
-	return join(1, (x,y) => x*y)(f, arr)
+function product(arr, f=n=>n) {
+	return join(1, (N,n) => N*n)(arr, f)
 }
 
 function parallel_resistors_equivalent(resistors) {
-	return 1 / sum(n=>1/n, resistors)
+	return 1 / sum(resistors, n=>1/n)
 }
 
 function series_resistors_equivalent(resistors) {
-	return sum(n=>n, resistors)
+	return sum(resistors)
 }
 
 function extend_left_by_character_n_times(str, char, n) {
@@ -391,7 +391,7 @@ function matrix_as_sum_of_symmetric_and_skew_symmetric_matrices(A) {
 }
 
 function matrix_trace(A) {
-	return sum(x=>x, matrix_main_diagonal(A))
+	return sum(matrix_main_diagonal(A))
 }
 
 function matrix_remove_row_column(A, r, c) {
@@ -415,8 +415,8 @@ function matrix_determinant(A) {
 		return 'Matrix is too small.'
 
 	if(matrix_rows(A) == 2 && matrix_columns(A) == 2) {
-		return product(x=>x, matrix_main_diagonal(A)) -
-			product(x=>x, matrix_anti_diagonal(A))
+		return product(matrix_main_diagonal(A)) -
+			product(matrix_anti_diagonal(A))
 	}
 	else {
 		const firstRow = A[0]
@@ -520,8 +520,7 @@ function unit_vector(p) {
 }
 
 function vectors_dot_product(p, q) {
-	return sum(x => x,
-		   apply_proc_to_same_elements_of_vectors((a,b) => a*b, p, q))
+	return sum(apply_proc_to_same_elements_of_vectors((a,b) => a*b, p, q))
 }
 
 function vectors_angle_cos(p, q) {
