@@ -475,8 +475,8 @@ function solve_quadratic_equation(a, b, c) {
 	return roots
 }
 
-function make_vector(x,y) {
-	return [x,y]
+function make_vector(Xs) {
+	return Xs
 }
 
 function vector_x(p) {
@@ -485,6 +485,14 @@ function vector_x(p) {
 
 function vector_y(p) {
 	return p[1]
+}
+
+function vector_z(p) {
+	return p[2]
+}
+
+function is_vector(x) {
+	return array_length(x) > 1
 }
 
 function apply_proc_to_vector_elements(proc, p) {
@@ -511,8 +519,9 @@ function multiply_vector_by_scalar(p, n) {
 }
 
 function vector_length(p) {
-	return Math.sqrt(Math.pow(vector_x(p), 2) +
-			 Math.pow(vector_y(p), 2))
+	return Math.sqrt(
+		sum(apply_proc_to_vector_elements(
+			(_, x) => Math.pow(x, 2), p)))
 }
 
 function unit_vector(p) {
