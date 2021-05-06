@@ -1001,3 +1001,13 @@ function func_range(proc, domain) {
 		proc(scar(domain)),
 		() => func_range(proc, scdr(domain)))
 }
+
+function newtonian_gravity(m, M, R) {
+	const G = 6.674e-11
+	if(is_vector(R)) {
+		const Rm = vector_length(R)
+		const mag = G * m * M / (Rm * Rm * Rm)
+		return multiply_vector_by_scalar(R, -mag)
+	}
+	return G * m * M / (R * R)
+}

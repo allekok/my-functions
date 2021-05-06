@@ -94,6 +94,7 @@ const my_library_functions = [
 	'multiply_vector_by_scalar(p, n)',
 	'my_server(func, arg, callback)',
 	'nand_gate(a, b)',
+	'newtonian_gravity(m, M, R)',
 	'nonprime_factors(n)',
 	'nor_gate(a, b)',
 	'not_gate(a)',
