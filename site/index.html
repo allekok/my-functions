@@ -124,8 +124,11 @@
 		 .func_form {
 			 white-space:normal;
 		 }
-		 .func_form div {
+		 .func_form div, .func_form details {
 			 white-space:pre-wrap;
+		 }
+		 .func_form details {
+			 padding-bottom:1rem;
 		 }
 		 .func_form .anti_res {
 			 display:flex;
@@ -468,6 +471,7 @@
                          <button type='submit'>play_circle_filled</button>
                          </section>
                          </section>
+                         <details><summary>Source code</summary>${to_string(proc)}</details>
                          <div></div>
 			 </fieldset>
 			 </form>`
