@@ -47,6 +47,7 @@ const my_library_functions = [
 	'factors(n, proc=n=>true, limit=null)',
 	'false_gate(a, b)',
 	'false_true_gate(a, b)',
+	'func_range(proc, domain)',
 	'hexadecimal_to_binary(hex)',
 	'hexadecimal_to_decimal(hex)',
 	'hexadecimal_to_octal(hex)',

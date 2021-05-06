@@ -938,7 +938,7 @@ function truth_table(proc) {
 }
 
 function make_stream(init, proc) {
-	return [init, () => proc(init)]
+	return [init, () => proc()]
 }
 
 function scar(stream) {
@@ -986,4 +986,10 @@ function is_prime(n) {
 
 function is_nonprime(n) {
 	return !is_prime(n)
+}
+
+function func_range(proc, domain) {
+	return make_stream(
+		proc(scar(domain)),
+		() => func_range(proc, scdr(domain)))
 }
