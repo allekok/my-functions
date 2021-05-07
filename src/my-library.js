@@ -730,26 +730,26 @@ function lisp(str) {
 	}
 
 	/* Evaluation */
-	function _eval(exp, env_name) {
+	function _eval(exp, env) {
 		while(true) {
 			if(!isNaN(exp))
 				return exp
 			else if(!is_array(exp))
-				return lookup(exp, env_name)
+				return lookup(exp, env)
 			else if(exp[0] == 'quote')
 				return exp[1]
 			else if(exp[0] == 'define')
-				return define(exp, env_name)
+				return define(exp, env)
 			else if(exp[0] == 'lambda')
-				return make_proc(exp[1], exp[2], env_name)
+				return make_proc(exp[1], exp[2], env)
 			else if(exp[0] == 'if')
-				exp = exp[_eval(exp[1], env_name) ? 2 : 3]
+				exp = exp[_eval(exp[1], env) ? 2 : 3]
 			else if(exp[0] == 'begin')
-				exp = begin(exp, env_name)
+				exp = begin(exp, env)
 			else {
-				const res = _apply(exp.shift(), exp, env_name)
+				const res = _apply(exp.shift(), exp, env)
 				exp = res[0]
-				env_name = res[1]
+				env = res[1]
 			}
 		}
 	}
@@ -788,7 +788,7 @@ function lisp(str) {
 			else if(env[1] !== undefined)
 				env_name = env[1]
 			else
-				return sym
+				return
 		}
 	}
 	function set(sym, val, env_name) {
@@ -810,27 +810,18 @@ function lisp(str) {
 	}
 
 	/* Apply */
-	function _apply(proc_name, arg, env_name) {
-		const proc = _eval(proc_name, env_name)
+	function _apply(proc, arg, env) {
+		proc = _eval(proc, env)
 		if(is_primitive(proc))
-			return apply_primitive(proc, arg, env_name)
+			return apply_primitive(proc, arg, env)
 		else
-			return apply_proc(proc, arg, env_name)
+			return apply_proc(proc, arg, env)
 	}
 	function apply_proc(proc, arg, env) {
 		const exec_env = make_env({}, proc_env(proc))
-		const param = proc_param(proc)
-		if(!is_array(param))
-			set(param, evlist(arg, env), exec_env)
-		else if(param[param.length - 2] == '.') {
-			param.slice(0, param.length - 2).map(
-				(p,i) => set(p, _eval(arg[i], env), exec_env))
-			set(param[param.length - 1],
-			    evlist(arg.slice(param.length - 2), env),
-			    exec_env)
-		}
-		else
-			param.map((p,i) => set(p, _eval(arg[i], env), exec_env))
+		bind(proc_param(proc),
+		     evlist(arg, env),
+		     exec_env)
 		return [ clone(proc_body(proc)) , exec_env ]
 	}
 	function apply_primitive(proc, arg, env) {
@@ -841,6 +832,17 @@ function lisp(str) {
 	}
 	function evlist(list, env) {
 		return list.map(o => _eval(o, env))
+	}
+	function bind(param, arg, env) {
+		if(!is_array(param))
+			set(param, arg, env)
+		else if(param[param.length - 2] == '.') {
+			const dot = param.length - 2
+			bind(param.slice(0, dot), arg, exec_env)
+			bind(param[dot + 1], arg.slice(dot), exec_env)
+		}
+		else
+			param.map((p, i) => bind(p, arg[i], env))
 	}
 	function clone(x) {
 		if(!is_array(x))
