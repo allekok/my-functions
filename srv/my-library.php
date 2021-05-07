@@ -3,7 +3,6 @@ require("my-library-functions.php");
 
 function apropos($str) {
 	function normalize_data($str) {
-		$str = trim($str);
 		$str = preg_replace("/[\s_\-,\.\?!\*]+/u", "", $str);
 		$str = strtoupper($str);
 		return $str;
