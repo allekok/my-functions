@@ -695,24 +695,23 @@ function draw_vertically(char, n, indent=0) {
 }
 
 function lisp(str) {
-	function tokenizer(str) {
-		return str.replace(/([\(\)\[\]\{\}])/g, ' $1 ').trim().split(/\s+/)
+	/* Parser */
+	function parse(str) {
+		return read_from_tokens(tokenizer(str))
 	}
-	function atom(token) {
-		if(token === '0')
-			return 0
-		else if(Number(token))  /* !isNaN(Number(token)) */
-			return Number(token)
-		else
-			return token
+	function tokenizer(str) {
+		return str.
+			replace(/([\(\)\[\]\{\}])/g, ' $1 ').
+			trim().
+			split(/\s+/)
 	}
 	function read_from_tokens(tokens) {
-		if(tokens.length == 0)
+		if(!tokens.length)
 			return
 		const token = tokens.shift()
 		if('({['.indexOf(token) !== -1) {
 			let L = []
-			while(tokens.length > 0 && ']})'.indexOf(tokens[0]) === -1)
+			while(tokens.length && ']})'.indexOf(tokens[0]) === -1)
 				L.push(read_from_tokens(tokens))
 			tokens.shift()
 			return L
@@ -722,95 +721,148 @@ function lisp(str) {
 		else
 			return atom(token)
 	}
-	function parse(str) {
-		return read_from_tokens(tokenizer(str))
+	function atom(token) {
+		if(token === '0')
+			return 0
+		else if(Number(token))
+			return Number(token)
+		return token
 	}
-	function _eval(exp, env) {
+
+	/* Evaluation */
+	function _eval(exp, env_name) {
 		while(true) {
 			if(!isNaN(exp))
 				return exp
-			else if(!Array.isArray(exp))
-				return lookup_env(exp, env)
+			else if(!is_array(exp))
+				return lookup(exp, env_name)
 			else if(exp[0] == 'quote')
-				return exp.slice(1)
-			else if(exp[0] == 'if')
-				exp = exp[_eval(exp[1], env) ? 2 : 3]
-			else if(exp[0] == 'define') {
-				if(Array.isArray(exp[1])) {
-					const k = exp[1].shift()
-					return envs[env][1][k] = make_proc(exp[1], exp[2], make_env({}, env))
-				}
-				return envs[env][1][exp[1]] = _eval(exp[2], env)
-			}
+				return exp[1]
+			else if(exp[0] == 'define')
+				return define(exp, env_name)
 			else if(exp[0] == 'lambda')
-				return make_proc(exp[1], exp[2], make_env({}, env))
-			else if(exp[0] == 'begin') {
-				exp.shift()
-				for(let i = 0; i < exp.length-1; i++)
-					_eval(exp[i], env)
-				exp = exp[exp.length - 1]
-			}
+				return make_proc(exp[1], exp[2], env_name)
+			else if(exp[0] == 'if')
+				exp = exp[_eval(exp[1], env_name) ? 2 : 3]
+			else if(exp[0] == 'begin')
+				exp = begin(exp, env_name)
 			else {
-				const proc = _eval(exp.shift(), env)
-				if(is_primitive(proc)) {
-					const arg = exp.map(o => _eval(o, env))
-					exp = proc(arg)
-				}
-				else {
-					const param = proc[1]
-					const body = proc[2]
-					const proc_env_name = proc[3]
-					const exec_env_name = make_env({}, proc_env_name)
-					let exec_env = envs[exec_env_name]
-					
-					for(const i in param)
-						exec_env[1][param[i]] = _eval(exp[i], env)
-					
-					env = exec_env_name
-					exp = clone(body)
-				}
+				const res = _apply(exp.shift(), exp, env_name)
+				exp = res[0]
+				env_name = res[1]
 			}
 		}
+	}
+
+	/* Special forms */
+	function define(exp, env) {
+		if(is_array(exp[1])) {
+			const sym = exp[1].shift()
+			return set(sym,
+				   make_proc(exp[1], exp[2], env),
+				   env)
+		}
+		return set(exp[1], _eval(exp[2], env), env)
+	}
+	function begin(exp, env) {
+		for(let i = 1; i < exp.length - 1; i++)
+			_eval(exp[i], env)
+		return exp[exp.length - 1]
+	}
+
+	/* Environment */
+	function env_name_generator(i = 0) {
+		return () => i++
+	}
+	const generate_env_name = env_name_generator()
+	function make_env(pairs, parent) {
+		const env_name = generate_env_name()
+		envs[env_name] = [pairs, parent]
+		return env_name
+	}
+	function lookup(sym, env_name) {
+		while(true) {
+			const env = envs[env_name]
+			if(sym in env[0])
+				return env[0][sym]
+			else if(env[1] !== undefined)
+				env_name = env[1]
+			else
+				return sym
+		}
+	}
+	function set(sym, val, env_name) {
+		return envs[env_name][0][sym] = val
+	}
+	
+	/* Procedure */
+	function make_proc(param, body, env) {
+		return ['closure', param, body, env]
+	}
+	function proc_param(proc) {
+		return proc[1]
+	}
+	function proc_body(proc) {
+		return proc[2]
+	}
+	function proc_env(proc) {
+		return proc[3]
+	}
+
+	/* Apply */
+	function _apply(proc_name, arg, env_name) {
+		const proc = _eval(proc_name, env_name)
+		if(is_primitive(proc))
+			return apply_primitive(proc, arg, env_name)
+		else
+			return apply_proc(proc, arg, env_name)
+	}
+	function apply_proc(proc, arg, env) {
+		const exec_env = make_env({}, proc_env(proc))
+		const param = proc_param(proc)
+		if(!is_array(param))
+			set(param, evlist(arg, env), exec_env)
+		else if(param[param.length - 2] == '.') {
+			param.slice(0, param.length - 2).map(
+				(p,i) => set(p, _eval(arg[i], env), exec_env))
+			set(param[param.length - 1],
+			    evlist(arg.slice(param.length - 2), env),
+			    exec_env)
+		}
+		else
+			param.map((p,i) => set(p, _eval(arg[i], env), exec_env))
+		return [ clone(proc_body(proc)) , exec_env ]
+	}
+	function apply_primitive(proc, arg, env) {
+		return [ proc(evlist(arg, env)) , env ]
 	}
 	function is_primitive(proc) {
 		return typeof(proc) == 'function'
 	}
-	function clone(arr) {
-		let new_arr = []
-		for(const o of arr)
-			new_arr.push(Array.isArray(o) ? clone(o) : o)
-		return new_arr
+	function evlist(list, env) {
+		return list.map(o => _eval(o, env))
 	}
-	function generate_env_name() {
-		return env_key++
+	function clone(x) {
+		if(!is_array(x))
+			return x
+		
+		let arr = []
+		for(const o of x)
+			arr.push(is_array(o) ? clone(o) : o)
+		return arr
 	}
-	function make_env(pairs, parent, env) {
-		const env_name = generate_env_name()
-		envs[env_name] = [parent, pairs]
-		return env_name
-	}
-	function lookup_env(key, env_name) {
-		while(true) {
-			const env = envs[env_name]
-			if(key in env[1])
-				return env[1][key]
-			else if(env[0] !== undefined)
-				env_name = env[0]
-			else
-				return key
-		}
-	}
-	function make_proc(param, body, env) {
-		return ['closure', param, body, env]
-	}
+
+	/* Primitives */
 	function js_eval(arg) {
 		return eval(arg.join(' '))
 	}
+
+	/* Print */
 	function _print(x) {
 		return append_to_result(to_string(x))
 	}
-	
-	let env_key = 0
+
+	/* Run */
 	let envs = []
 	const global_env = make_env({ js: js_eval }, undefined)
 	return _eval(parse(str), global_env)
