@@ -747,11 +747,16 @@ function lisp(str) {
 			else if(exp[0] == 'begin')
 				exp = begin(exp, env)
 			else {
-				const res = _apply(exp.shift(), exp, env)
+				const proc = _eval(exp.shift(), env)
+				const arg = evlist(exp, env)
+				const res = _apply(proc, arg, env)
 				exp = res[0]
 				env = res[1]
 			}
 		}
+	}
+	function evlist(list, env) {
+		return list.map(o => _eval(o, env))
 	}
 
 	/* Special forms */
@@ -811,7 +816,6 @@ function lisp(str) {
 
 	/* Apply */
 	function _apply(proc, arg, env) {
-		proc = _eval(proc, env)
 		if(is_primitive(proc))
 			return apply_primitive(proc, arg, env)
 		else
@@ -819,19 +823,14 @@ function lisp(str) {
 	}
 	function apply_proc(proc, arg, env) {
 		const exec_env = make_env({}, proc_env(proc))
-		bind(proc_param(proc),
-		     evlist(arg, env),
-		     exec_env)
+		bind(proc_param(proc), arg, exec_env)
 		return [ clone(proc_body(proc)) , exec_env ]
 	}
 	function apply_primitive(proc, arg, env) {
-		return [ proc(evlist(arg, env)) , env ]
+		return [ proc(arg) , env ]
 	}
 	function is_primitive(proc) {
 		return typeof(proc) == 'function'
-	}
-	function evlist(list, env) {
-		return list.map(o => _eval(o, env))
 	}
 	function bind(param, arg, env) {
 		if(!is_array(param))
