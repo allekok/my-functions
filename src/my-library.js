@@ -65,8 +65,10 @@ function decimal_floating_point_to_base_n(num, n, precision=101) {
 function decimal_to_base_n(num, n, precision=101) {
 	let x, int = parseInt(num)
 	x = decimal_integer_to_base_n(int, n)
-	if(is_float(num))
-		x += decimal_floating_point_to_base_n(num - int, n, precision)
+	if(is_float(num)) {
+		x += '.' + decimal_floating_point_to_base_n(
+			num - int, n, precision)
+	}
 	return x
 }
 
