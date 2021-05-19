@@ -746,8 +746,6 @@ function lisp(str) {
 				return make_proc(exp[1], exp[2], env)
 			else if(exp[0] == 'if')
 				exp = exp[_eval(exp[1], env) ? 2 : 3]
-			else if(exp[0] == 'begin')
-				exp = begin(exp, env)
 			else {
 				const proc = _eval(exp.shift(), env)
 				const arg = evlist(exp, env)
@@ -770,11 +768,6 @@ function lisp(str) {
 				   env)
 		}
 		return set(exp[1], _eval(exp[2], env), env)
-	}
-	function begin(exp, env) {
-		for(let i = 1; i < exp.length - 1; i++)
-			_eval(exp[i], env)
-		return exp[exp.length - 1]
 	}
 
 	/* Environment */
@@ -856,8 +849,11 @@ function lisp(str) {
 	}
 
 	/* Primitives */
-	function js_eval(arg) {
+	function js(arg) {
 		return eval(arg.join(' '))
+	}
+	function begin(exp, env) {
+		return exp[exp.length - 1]
 	}
 
 	/* Print */
@@ -867,7 +863,7 @@ function lisp(str) {
 
 	/* Run */
 	let envs = []
-	const global_env = make_env({ js: js_eval }, undefined)
+	const global_env = make_env({ js: js, begin: begin }, undefined)
 	return _eval(parse(str), global_env)
 }
 
