@@ -844,7 +844,7 @@ function lisp(str) {
 		
 		let arr = []
 		for(const o of x)
-			arr.push(is_array(o) ? clone(o) : o)
+			arr.push(clone(o))
 		return arr
 	}
 
@@ -852,8 +852,8 @@ function lisp(str) {
 	function js(arg) {
 		return eval(arg.join(' '))
 	}
-	function begin(exp, env) {
-		return exp[exp.length - 1]
+	function begin(arg) {
+		return arg[arg.length - 1]
 	}
 
 	/* Print */
