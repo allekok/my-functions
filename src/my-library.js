@@ -1062,3 +1062,46 @@ function newtonian_gravity(m, M, R) {
 	}
 	return G * m * M / (R * R)
 }
+
+function max(arr, f=x=>x) {
+	let M = f(arr[0])
+	for(const o of arr.slice(1))
+		if((o = f(o)) > M)
+			M = o
+	return M
+}
+
+function longest_array(arr) {
+	return max(arr, A => A.length)
+}
+
+function logic_lang(str) {
+	function translate(str) {
+		str = str.
+			replace(/\s+/g, '').
+			replace(/(\(.+\))'/g, '(!$1)').
+			replace(/(\w)'/g, '(!$1)').
+			replace(/(\w)(\w)/g, '($1&&$2)').
+			replace(/(\))(\w)/g, '$1&&$2').
+			replace(/(\w)(\()/g, '$1&&$2').
+			replace(/(\))(\()/g, '$1&&$2').
+			replace(/\+/g, ')||(')
+		str = `(${str})`
+		return str
+	}
+	function extract_vars(str) {
+		let vars = []
+		for(const i in str)
+			if('+\' \n\r\t'.indexOf(str[i]) === -1 &&
+			   vars.indexOf(str[i]) === -1)
+				vars.push(str[i])
+		return vars.sort()
+	}
+	function vars_list(str) {
+		return `(${extract_vars(str).join(', ')})`
+	}
+	function make_proc(str) {
+		return eval(`${vars_list(str)} => eval("${translate(str)}")`)
+	}
+	return make_proc(str)
+}
