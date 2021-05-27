@@ -1065,7 +1065,7 @@ function newtonian_gravity(m, M, R) {
 
 function max(arr, f=x=>x) {
 	let M = f(arr[0])
-	for(const o of arr.slice(1))
+	for(let o of arr.slice(1))
 		if((o = f(o)) > M)
 			M = o
 	return M
@@ -1101,7 +1101,7 @@ function logic_lang(str) {
 		return `(${extract_vars(str).join(', ')})`
 	}
 	function make_proc(str) {
-		return eval(`${vars_list(str)} => eval("${translate(str)}")`)
+		return eval(`${vars_list(str)} => ${translate(str)}`)
 	}
 	return make_proc(str)
 }
