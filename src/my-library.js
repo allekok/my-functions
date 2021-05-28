@@ -1105,3 +1105,43 @@ function logic_lang(str) {
 	}
 	return make_proc(str)
 }
+
+function translate_numbers(S) {
+	/* Dictionary */
+	const ckbNum = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+	const engNum = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+	const perNum = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+
+	/* Translator */
+	function isAoA(X) {
+		return Array.isArray(X[0])
+	}
+	function mapStr(S, F, A='') {
+		return !S ? A : mapStr(S.substr(1), F, A + F(S[0]))
+	}
+	function toAll(S) {
+		return translate(S,
+				 [ckbNum, engNum, perNum],
+				 [ckbNum, engNum, perNum])
+	}
+	function toCkb(S) {
+		return translate(S, [engNum, perNum], ckbNum)
+	}
+	function toEng(S) {
+		return translate(S, [ckbNum, perNum], engNum)
+	}
+	function toPer(S) {
+		return translate(S, [engNum, ckbNum], perNum)
+	}
+	function translate(S, F, T) {
+		if(isAoA(T))
+			return T.map(t => translate(S, F, t))
+		else if(isAoA(F))
+			F.map(f => S = translate(S, f, T))
+		else
+			return mapStr(S,
+				      C => (i = F.indexOf(C)) !== -1 ? T[i] : C)
+		return S
+	}
+	return toAll(String(S))
+}

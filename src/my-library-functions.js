@@ -127,6 +127,7 @@ const my_library_functions = [
 	'test_function(proc, inputs)',
 	'tewar(w, n=25, dicts=\'all\', out=\'text\')',
 	'time(proc)',
+	'translate_numbers(S)',
 	'true_false_gate(a, b)',
 	'truth_table(proc)',
 	'unit_vector(p)',
