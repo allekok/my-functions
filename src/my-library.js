@@ -1111,6 +1111,7 @@ function translate_numbers(S) {
 	const ckbNum = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
 	const engNum = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 	const perNum = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+	const allNum = [ckbNum, engNum, perNum]
 
 	/* Translator */
 	function isAoA(X) {
@@ -1120,18 +1121,7 @@ function translate_numbers(S) {
 		return !S ? A : mapStr(S.substr(1), F, A + F(S[0]))
 	}
 	function toAll(S) {
-		return translate(S,
-				 [ckbNum, engNum, perNum],
-				 [ckbNum, engNum, perNum])
-	}
-	function toCkb(S) {
-		return translate(S, [engNum, perNum], ckbNum)
-	}
-	function toEng(S) {
-		return translate(S, [ckbNum, perNum], engNum)
-	}
-	function toPer(S) {
-		return translate(S, [engNum, ckbNum], perNum)
+		return translate(S, allNum, allNum)
 	}
 	function translate(S, F, T) {
 		if(isAoA(T))
