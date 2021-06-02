@@ -1117,8 +1117,8 @@ function translate_numbers(S) {
 	function isAoA(X) {
 		return Array.isArray(X[0])
 	}
-	function mapStr(S, F, A='') {
-		return !S ? A : mapStr(S.substr(1), F, A + F(S[0]))
+	function map(S, F, A='') {
+		return !S ? A : map(S.substr(1), F, A + F(S[0]))
 	}
 	function toAll(S) {
 		return translate(S, allNum, allNum)
@@ -1129,8 +1129,7 @@ function translate_numbers(S) {
 		else if(isAoA(F))
 			F.map(f => S = translate(S, f, T))
 		else
-			return mapStr(S,
-				      C => (i = F.indexOf(C)) !== -1 ? T[i] : C)
+			return map(S, C => (i = F.indexOf(C)) !== -1 ? T[i] : C)
 		return S
 	}
 	return toAll(String(S))
