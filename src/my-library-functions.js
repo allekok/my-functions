@@ -12,6 +12,7 @@ const my_library_functions = [
 	'apropos(str)',
 	'are_vectors_orthogonal(p, q)',
 	'array_length(x)',
+	'asm(str)',
 	'base_n_floating_point_to_decimal(x, n)',
 	'base_n_integer_to_decimal(x, n)',
 	'base_n_to_decimal(x, n)',

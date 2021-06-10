@@ -1134,3 +1134,35 @@ function translate_numbers(S) {
 	}
 	return toAll(String(S))
 }
+
+function asm(str) {
+	/* Functions */
+	const lines = str => str.trim().split(/\n+/)
+	const tokenize = lns => lns.map(l=> l.trim().split(/\s+|,/).filter(o=> o))
+	const parse = str => tokenize(lines(str))
+	const is_atom = x => !Array.isArray(x)
+	const is_const = x => c.indexOf(x) !== -1
+	const set = (d,s) => e[d] = s
+	const fetch = x => e[x]
+	const ff = x => f[x]
+	const evlist = list => list.map(o => ev(o))
+	const run = (cmd,args) => cmd(...args)
+	function ev(x) {
+		if(x === '0' || Number(x))
+			return Number(x)
+		else if(is_atom(x))
+			return is_const(x) ? x : fetch(x)
+		else
+			run(ff(x[0]), evlist(x.slice(1)))
+	}
+
+	/* Run */
+	const c = ['ax', 'bx', 'cx', 'dx']
+	const e = {}
+	const f = {
+		mov: (d,s) => set(d, s),
+		add: (d,s) => set(d, fetch(d)+s),
+	}
+	evlist(parse(str))
+	return e
+}
