@@ -1,5 +1,4 @@
 const my_library_functions = [
-	'$(str)',
 	'add_matrices(A, B)',
 	'add_vectors(p, q)',
 	'allekok_status()',
@@ -10,6 +9,7 @@ const my_library_functions = [
 	'apply_proc_to_same_elements_of_matrices(proc, A, B)',
 	'apply_proc_to_same_elements_of_vectors(proc, p, q)',
 	'apply_proc_to_vector_elements(proc, p)',
+	'apropos(str)',
 	'are_vectors_orthogonal(p, q)',
 	'array_length(x)',
 	'base_n_floating_point_to_decimal(x, n)',

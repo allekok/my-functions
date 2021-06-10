@@ -1,4 +1,4 @@
-function $(str) {
+function apropos(str) {
 	function normalize_data(str) {
 		str = str.replace(/[\s_\-,\.\?!\*]+/g, '')
 		str = str.toUpperCase()

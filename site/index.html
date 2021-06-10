@@ -232,7 +232,7 @@
 		 shrinkBtn.addEventListener('click', shrink_input)
 		 clrBtn.addEventListener('click', clear)
 		 ffBtn.addEventListener('click', e => func_form(func_form))
-		 searchBtn.addEventListener('click', e => func_form($))
+		 searchBtn.addEventListener('click', e => func_form(apropos))
 		 execBtn.addEventListener('click', () => {
 			 execute()
 			 input.focus()
@@ -258,7 +258,7 @@
 			 else if(e.altKey && e.code == 'ArrowUp')
 				 grow_input()
 			 else if(e.altKey && e.code == 'KeyS')
-				 func_form($)
+				 func_form(apropos)
 			 else if(e.altKey && e.code == 'Backslash')
 				 func_form(func_form)
 			 else if(e.altKey && e.code == 'KeyC')
