@@ -1141,7 +1141,6 @@ function asm(str) {
 	const tokenize = lns => lns.map(l=>l.trim().split(/\s+|,/).filter(o=>o))
 	const parse = str => tokenize(lines(str))
 	const is_atom = x => !Array.isArray(x)
-	const is_const = x => c.indexOf(x) !== -1
 	const set = (d,s) => e[d] = s
 	const fetch = x => e[x]
 	const ff = x => f[x]
@@ -1157,12 +1156,13 @@ function asm(str) {
 	}
 
 	/* Run */
-	const c = ['ax', 'bx', 'cx', 'dx']
 	const e = {}
 	const f = {
 		mov: (d,s) => set(d, ev(s)),
 		add: (d,s) => set(d, ev(d)+ev(s)),
 		sub: (d,s) => set(d, ev(d)-ev(s)),
+		mul: (d,s) => set(d, ev(d)*ev(s)),
+		nop: () => null,
 	}
 	evlist(parse(str))
 	return e
