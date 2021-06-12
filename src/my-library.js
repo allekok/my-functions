@@ -1138,7 +1138,7 @@ function translate_numbers(S) {
 function asm(str) {
 	/* Functions */
 	const lines = str => str.trim().split(/\n+/)
-	const tokenize = lns => lns.map(l=> l.trim().split(/\s+|,/).filter(o=> o))
+	const tokenize = lns => lns.map(l=>l.trim().split(/\s+|,/).filter(o=>o))
 	const parse = str => tokenize(lines(str))
 	const is_atom = x => !Array.isArray(x)
 	const is_const = x => c.indexOf(x) !== -1
@@ -1151,17 +1151,18 @@ function asm(str) {
 		if(x === '0' || Number(x))
 			return Number(x)
 		else if(is_atom(x))
-			return is_const(x) ? x : fetch(x)
+			return fetch(x)
 		else
-			run(ff(x[0]), evlist(x.slice(1)))
+			run(ff(x[0]), x.slice(1))
 	}
 
 	/* Run */
 	const c = ['ax', 'bx', 'cx', 'dx']
 	const e = {}
 	const f = {
-		mov: (d,s) => set(d, s),
-		add: (d,s) => set(d, fetch(d)+s),
+		mov: (d,s) => set(d, ev(s)),
+		add: (d,s) => set(d, ev(d)+ev(s)),
+		sub: (d,s) => set(d, ev(d)-ev(s)),
 	}
 	evlist(parse(str))
 	return e
