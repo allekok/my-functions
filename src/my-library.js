@@ -1114,15 +1114,9 @@ function translate_numbers(S) {
 	const allNum = [ckbNum, engNum, perNum]
 
 	/* Translator */
-	function isAoA(X) {
-		return Array.isArray(X[0])
-	}
-	function map(S, F, A='') {
-		return !S ? A : map(S.substr(1), F, A + F(S[0]))
-	}
-	function toAll(S) {
-		return translate(S, allNum, allNum)
-	}
+	const isAoA = X => Array.isArray(X[0])
+	const map = (S, F, A='') => !S ? A : map(S.substr(1), F, A + F(S[0]))
+	const toAll = S => translate(S, allNum, allNum)
 	function translate(S, F, T) {
 		if(isAoA(T))
 			return T.map(t => translate(S, F, t))
