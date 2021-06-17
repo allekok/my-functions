@@ -1157,6 +1157,15 @@ function asm(str) {
 		sub: (d,s) => set(d, ev(d)-ev(s)),
 		mul: (d,s) => set(d, ev(d)*ev(s)),
 		nop: () => null,
+		cmp: (d,s) => set('cmp', ev(d)-ev(s)),
+		jmp: n => evlist(parse(str).slice(ev(n))),
+		jt: (n,t) => t ? ff('jmp')(n) : null,
+		je: n => ff('jt')(n, !fetch('cmp')),
+		jg: n => ff('jt')(n, fetch('cmp') > 0),
+		jl: n => ff('jt')(n, fetch('cmp') < 0),
+		jge: n => ff('jt')(n, fetch('cmp') >= 0),
+		jle: n => ff('jt')(n, fetch('cmp') <= 0),
+		jne: n => ff('jt')(n, fetch('cmp')),
 	}
 	evlist(parse(str))
 	return e
