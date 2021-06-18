@@ -1152,13 +1152,13 @@ function asm(str) {
 	/* Run */
 	const e = {}
 	const f = {
+		nop: () => null,
 		mov: (d,s) => set(d, ev(s)),
 		add: (d,s) => set(d, ev(d)+ev(s)),
 		sub: (d,s) => set(d, ev(d)-ev(s)),
 		mul: (d,s) => set(d, ev(d)*ev(s)),
-		nop: () => null,
 		cmp: (d,s) => set('cmp', ev(d)-ev(s)),
-		jmp: n => evlist(parse(str).slice(ev(n))),
+		jmp: n => evlist(statements.slice(ev(n))),
 		jt: (n,t) => t ? ff('jmp')(n) : null,
 		je: n => ff('jt')(n, !fetch('cmp')),
 		jg: n => ff('jt')(n, fetch('cmp') > 0),
@@ -1167,6 +1167,7 @@ function asm(str) {
 		jle: n => ff('jt')(n, fetch('cmp') <= 0),
 		jne: n => ff('jt')(n, fetch('cmp')),
 	}
-	evlist(parse(str))
+	const statements = parse(str)
+	evlist(statements)
 	return e
 }
