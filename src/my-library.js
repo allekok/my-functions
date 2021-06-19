@@ -1138,7 +1138,6 @@ function asm(str) {
 	const set = (d,s) => e[d] = s
 	const fetch = x => e[x]
 	const ff = x => f[x]
-	const evlist = list => list.map(o => ev(o))
 	const run = (cmd,args) => cmd(...args)
 	function ev(x) {
 		if(x === '0' || Number(x))
@@ -1150,7 +1149,6 @@ function asm(str) {
 	}
 
 	/* Run */
-	const e = {}
 	const f = {
 		nop: () => null,
 		mov: (d,s) => set(d, ev(s)),
@@ -1158,7 +1156,7 @@ function asm(str) {
 		sub: (d,s) => set(d, ev(d)-ev(s)),
 		mul: (d,s) => set(d, ev(d)*ev(s)),
 		cmp: (d,s) => set('cmp', ev(d)-ev(s)),
-		jmp: n => evlist(statements.slice(ev(n))),
+		jmp: n => ip = ev(n) - 1,
 		jt: (n,t) => t ? ff('jmp')(n) : null,
 		je: n => ff('jt')(n, !fetch('cmp')),
 		jg: n => ff('jt')(n, fetch('cmp') > 0),
@@ -1167,7 +1165,10 @@ function asm(str) {
 		jle: n => ff('jt')(n, fetch('cmp') <= 0),
 		jne: n => ff('jt')(n, fetch('cmp')),
 	}
+	const e = {}
 	const statements = parse(str)
-	evlist(statements)
+	let ip = 0
+	for(; ip < statements.length; ip++)
+		ev(statements[ip])
 	return e
 }
