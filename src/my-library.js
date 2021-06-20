@@ -1172,3 +1172,26 @@ function asm(str) {
 		ev(statements[ip])
 	return e
 }
+
+function equal(x, y) {
+	if(!is_object(x) && !is_object(y))
+		return x == y
+	if(is_object(x) && is_object(y)) {
+		for(const i in x) {
+			if(i in y) {
+				if(!equal(x[i], y[i]))
+					return false
+			}
+			else return false
+		}
+		for(const i in y) {
+			if(i in x) {
+				if(!equal(x[i], y[i]))
+					return false
+			}
+			else return false
+		}
+		return true
+	}
+	return false
+}

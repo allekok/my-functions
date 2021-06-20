@@ -42,6 +42,7 @@ const my_library_functions = [
 	'decimal_to_packed_bcd(num)',
 	'draw(bits, on_char=\'\u{25A0}\', off_char=\'\u{25A1}\')',
 	'draw_vertically(char, n, indent=0)',
+	'equal(x, y)',
 	'extend_left_by_character_n_times(str, char, n)',
 	'extract_sorted_object_keys(obj, sortFn=(x,y)=>x-y)',
 	'factorial(n, acc=1)',
