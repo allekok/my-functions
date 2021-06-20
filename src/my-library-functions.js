@@ -122,6 +122,7 @@ const my_library_functions = [
 	'server(url, func, arg, callback, keyword=\'request\', method=\'post\')',
 	'snth(stream, n)',
 	'solve_quadratic_equation(a, b, c)',
+	'sort(A)',
 	'string_to_matrix(str)',
 	'subtract_matrices(A, B)',
 	'subtract_vectors(p, q)',

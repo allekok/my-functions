@@ -1186,3 +1186,16 @@ function equal(x, y) {
 	}
 	return false
 }
+
+function sort(A) {
+	function swap(A, i, j) {
+		const t = A[i]
+		A[i] = A[j]
+		A[j] = t
+	}
+	for(let i = 0; i < A.length; i++)
+		for(let j = i + 1; j < A.length; j++)
+			if(A[i] > A[j])
+				swap(A, i, j)
+	return A
+}
