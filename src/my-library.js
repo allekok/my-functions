@@ -1133,44 +1133,34 @@ function translate_numbers(S) {
 function asm(str) {
 	/* Functions */
 	const lines = str => str.trim().split(/\n+/)
-	const tokenize = lns => lns.map(l=>l.trim().split(/\s+|,/).filter(o=>o))
+	const tokenize = lns => lns.map(l => l.trim().split(/\s+|,/).filter(o=>o))
 	const parse = str => tokenize(lines(str))
-	const is_atom = x => !Array.isArray(x)
-	const set = (d,s) => e[d] = s
-	const fetch = x => e[x]
-	const ff = x => f[x]
-	const run = (cmd,args) => cmd(...args)
-	function ev(x) {
-		if(x === '0' || Number(x))
-			return Number(x)
-		else if(is_atom(x))
-			return fetch(x)
-		else
-			run(ff(x[0]), x.slice(1))
-	}
-
+	const ev = x => (x === '0' || Number(x)) ? Number(x) : e[x]
+	const run = st => f[st[0]](...st.slice(1))
+	
 	/* Run */
+	const flag = 'flag'
 	const f = {
 		nop: () => null,
-		mov: (d,s) => set(d, ev(s)),
-		add: (d,s) => set(d, ev(d)+ev(s)),
-		sub: (d,s) => set(d, ev(d)-ev(s)),
-		mul: (d,s) => set(d, ev(d)*ev(s)),
-		cmp: (d,s) => set('cmp', ev(d)-ev(s)),
+		mov: (d,s) => e[d] = ev(s),
+		add: (d,s) => e[d] = ev(d)+ev(s),
+		sub: (d,s) => e[d] = ev(d)-ev(s),
+		mul: (d,s) => e[d] = ev(d)*ev(s),
+		cmp: (d,s) => e[flag] = ev(d)-ev(s),
 		jmp: n => ip = ev(n) - 1,
-		jt: (n,t) => t ? ff('jmp')(n) : null,
-		je: n => ff('jt')(n, !fetch('cmp')),
-		jg: n => ff('jt')(n, fetch('cmp') > 0),
-		jl: n => ff('jt')(n, fetch('cmp') < 0),
-		jge: n => ff('jt')(n, fetch('cmp') >= 0),
-		jle: n => ff('jt')(n, fetch('cmp') <= 0),
-		jne: n => ff('jt')(n, fetch('cmp')),
+		jt: (n,t) => t ? f['jmp'](n) : null,
+		je: n => f['jt'](n, !ev(flag)),
+		jg: n => f['jt'](n, ev(flag) > 0),
+		jl: n => f['jt'](n, ev(flag) < 0),
+		jge: n => f['jt'](n, ev(flag) >= 0),
+		jle: n => f['jt'](n, ev(flag) <= 0),
+		jne: n => f['jt'](n, ev(flag)),
 	}
 	const e = {}
-	const statements = parse(str)
 	let ip = 0
+	const statements = parse(str)
 	for(; ip < statements.length; ip++)
-		ev(statements[ip])
+		run(statements[ip])
 	return e
 }
 
