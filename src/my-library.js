@@ -997,7 +997,7 @@ function truth_table(proc) {
 }
 
 function make_stream(init, proc) {
-	return [init, () => proc()]
+	return [init, proc]
 }
 
 function scar(stream) {
@@ -1064,9 +1064,9 @@ function newtonian_gravity(m, M, R) {
 }
 
 function max(arr, f=x=>x) {
-	let M = f(arr[0])
+	let M = arr[0]
 	for(let o of arr.slice(1))
-		if((o = f(o)) > M)
+		if(f(o) > f(M))
 			M = o
 	return M
 }
@@ -1121,11 +1121,11 @@ function translate_numbers(S) {
 	function translate(S, F, T) {
 		if(isAoA(T))
 			return T.map(t => translate(S, F, t))
-		else if(isAoA(F))
+		else if(isAoA(F)) {
 			F.map(f => S = translate(S, f, T))
-		else
-			return map(S, C => (i = F.indexOf(C)) !== -1 ? T[i] : C)
-		return S
+			return S
+		}
+		return map(S, C => (i = F.indexOf(C)) !== -1 ? T[i] : C)
 	}
 	return toAll(String(S))
 }

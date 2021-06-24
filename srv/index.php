@@ -2,6 +2,7 @@
 /* Globals */
 require("my-library.php");
 $my_library_function_names = list_function_names(my_library_functions);
+header("Content-type: application/json; charset=utf-8");
 const REQ_KEYWORD = "request";
 
 /* Request Retrival and Validation */
@@ -12,7 +13,6 @@ if(!$request) die(json_encode("E: Invalid JSON."));
 
 /* Print The Result */
 $result = run($request);
-header("Content-type: application/json; charset=utf-8");
 die(json_encode($result));
 
 /* Functions */
@@ -35,7 +35,7 @@ function run($arr) {
 	global $my_library_function_names;
 	$func = $arr["func"];
 	$arg = $arr["arg"];
-	if($func && $arg && is_string($func) && $my_library_function_names[$func])
+	if($func && is_string($func) && $my_library_function_names[$func])
 		return $func($arg);
 	return "E: Invalid Request Object.";
 }
