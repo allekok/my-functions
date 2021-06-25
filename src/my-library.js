@@ -1064,10 +1064,13 @@ function newtonian_gravity(m, M, R) {
 }
 
 function max(arr, f=x=>x) {
-	let M = arr[0]
-	for(let o of arr.slice(1))
-		if(f(o) > f(M))
-			M = o
+	let M = [arr[0]]
+	for(const o of arr.slice(1)) {
+		if(f(o) > f(M[0]))
+			M = [o]
+		else if(f(o) == f(M[0]))
+			M.push(o)
+	}
 	return M
 }
 
