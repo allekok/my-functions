@@ -123,6 +123,7 @@ const my_library_functions = [
 	'snth(stream, n)',
 	'solve_quadratic_equation(a, b, c)',
 	'sort(A)',
+	'sql(str)',
 	'string_to_matrix(str)',
 	'subtract_matrices(A, B)',
 	'subtract_vectors(p, q)',
