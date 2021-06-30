@@ -993,7 +993,7 @@ function test_function(proc, inputs) {
 }
 
 function truth_table(proc) {
-	return test_function(proc, [true,false])
+	return test_function(proc, [1,0])
 }
 
 function make_stream(init, proc) {
