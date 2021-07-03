@@ -1406,3 +1406,26 @@ function sql(str) {
 	}
 	return [ev(str), db]
 }
+
+function search(A, x) {
+	for(const i in A)
+		if(x == A[i])
+			return i
+}
+
+function random_search(A, x) {
+	const acc = new Map()
+	while(acc.size != A.length) {
+		const idx = Math.floor(Math.random() * A.length)
+		if(A[idx] == x)
+			return idx
+		acc.set(idx, true)
+	}
+}
+
+function iota(N) {
+	const A = []
+	for(let i = 0; i < N; i++)
+		A.push(i)
+	return A
+}
