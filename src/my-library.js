@@ -1205,6 +1205,8 @@ function sort(A) {
 
 function sql(str) {
 	const db = { }
+
+	/* Patterns */
 	const matches = [
 		[/create table (.+)/i, create_table],
 		[/select (.+) from (.+) (where) (.+) (order) by (.+)/i,
@@ -1219,49 +1221,6 @@ function sql(str) {
 		[/update (.+) set (.+) where (.+)/i, update],
 		[/update (.+) set (.+)/i, update],
 	]
-	function update(M) {
-		const tbl = get_table(M[0])
-		if(M.length == 2)
-			return upd(M[1], tbl, _ => true)
-		else if(M.length == 3)
-			return upd(M[1], tbl, evcond(M[2]))
-		return null
-	}
-	function upd(set, tbl, cond) {
-		set = parse_set(set)
-		const ids = indexes(tbl, cond)
-		for(const i of ids)
-			for(const o of set)
-				tbl[i][o[0]] = eval(o[1])
-		return null
-	}
-	function indexes(tbl, cond) {
-		let acc = []
-		for(const i in tbl)
-			if(cond(tbl[i]))
-				acc.push(i)
-		return acc
-	}
-	function parse_set(set) {
-		return set.trim().split(/\s*,\s*/).map(t => t.split(/\s*=\s*/))
-	}
-	function ev(str) {
-		const st = remove_empty_members(statements(san_str(str))).map(
-			t => pattern_matcher(t))
-		return st[st.length - 1]
-	}
-	function remove_empty_members(arr) {
-		let acc = []
-		for(const o of arr)
-			if(o) acc.push(o)
-		return acc
-	}
-	function san_str(str) {
-		return str.trim()
-	}
-	function statements(str) {
-		return str.split(/\s*;\s*/)
-	}
 	function pattern_matcher(str) {
 		let M = null
 		for(const m of matches)
@@ -1293,87 +1252,6 @@ function sql(str) {
 		}
 		return null
 	}
-	function san_table(tbl) {
-		return tbl.trim()
-	}
-	function parse_cols(cols) {
-		cols = cols.trim()
-		if(cols == '*')
-			return cols
-		return cols.split(/\s*,\s*/)
-	}
-	function get_table(tbl) {
-		return db[san_table(tbl)]
-	}
-	function sel(tbl, cols) {
-		if(cols == '*')
-			return tbl
-		const acc = []
-		for(const row of tbl)
-			acc.push(sel_cols(row, cols))
-		return acc
-	}
-	function sel_cols(row, cols) {
-		const acc = {}
-		for(const col of cols)
-			acc[col] = row[col]
-		return acc
-	}
-	function evcond(cond) {
-		cond = cond.trim()
-		cond = cond.replace(/or/gi, '||')
-		cond = cond.replace(/and/gi, '&&')
-		cond = cond.replace(/(\w+)\s*!=\s*/gi, 'r["$1"]!==')
-		cond = cond.replace(/(\w+)\s*=\s*/gi, 'r["$1"]===')
-		return r => eval(cond)
-	}
-	function where(test, tbl) {
-		test = evcond(test)
-		const acc = []
-		for(const row of tbl)
-			if(test(row))
-				acc.push(row)
-		return acc
-	}
-	function evord(ord) {
-		ord = ord.split(/\s*,\s*/).map(o => o.split(/\s+/))
-		return rows => {
-			for(let i = ord.length - 1; i > -1; i--)
-				rows = sort(rows, ord[i])
-			return rows
-		}
-	}
-	function san_ord(ord) {
-		return ord.toLowerCase()
-	}
-	function sort(rows, ord) {
-		if(ord.length == 1) /* ASC */
-			return _sort(rows, ord[0], (a,b) => a > b)
-		else if(ord.length == 2) {
-			const order = san_ord(ord[1])
-			if(order == 'asc')
-				return _sort(rows, ord[0], (a,b) => a > b)
-			else if(order == 'desc')
-				return _sort(rows, ord[0], (a,b) => a < b)
-		}
-		return rows
-	}
-	function _sort(A, col, compfn) {
-		function swap(A, i, j) {
-			const t = A[i]
-			A[i] = A[j]
-			A[j] = t
-		}
-		for(let i = 0; i < A.length; i++)
-			for(let j = i + 1; j < A.length; j++)
-				if(compfn(A[i][col], A[j][col]))
-					swap(A, i, j)
-		return A
-	}
-	function order(orderfn, tbl) {
-		orderfn = evord(orderfn)
-		return orderfn(tbl)
-	}
 	function insert(M) {
 		const tbl = get_table(M[0])
 		if(M.length == 2) {
@@ -1388,14 +1266,55 @@ function sql(str) {
 		}
 		return null
 	}
+	function update(M) {
+		const tbl = get_table(M[0])
+		if(M.length == 2)
+			return upd(M[1], tbl, _ => true)
+		else if(M.length == 3)
+			return upd(M[1], tbl, evcond(M[2]))
+		return null
+	}
+
+	/* Parsers */
+	function san_str(str) {
+		return str.trim()
+	}
+	function san_ord(ord) {
+		return ord.toLowerCase()
+	}
+	function san_table(tbl) {
+		return tbl.trim()
+	}
+	function parse_cols(cols) {
+		cols = cols.trim()
+		if(cols == '*')
+			return cols
+		return cols.split(/\s*,\s*/)
+	}
 	function parse_row(row) {
 		return row.split(/\s*,\s*/).map(t => eval(t.trim()))
 	}
-	function extract_cols(tbl) {
-		let cols = []
-		for(const k in tbl[0])
-			cols.push(k)
-		return cols
+	function parse_set(set) {
+		return set.trim().split(/\s*,\s*/).map(t => t.split(/\s*=\s*/))
+	}
+	function statements(str) {
+		return str.split(/\s*;\s*/)
+	}
+
+	/* Mechanisms */
+	function sel(tbl, cols) {
+		if(cols == '*')
+			return tbl
+		const acc = []
+		for(const row of tbl)
+			acc.push(sel_cols(row, cols))
+		return acc
+	}
+	function sel_cols(row, cols) {
+		const acc = {}
+		for(const col of cols)
+			acc[col] = row[col]
+		return acc
 	}
 	function ins(tbl, cols, row) {
 		let acc = {}
@@ -1404,6 +1323,99 @@ function sql(str) {
 		tbl.push(acc)
 		return acc
 	}
+	function upd(set, tbl, cond) {
+		set = parse_set(set)
+		const ids = indexes(tbl, cond)
+		for(const i of ids)
+			for(const o of set)
+				tbl[i][o[0]] = eval(o[1])
+		return null
+	}
+	function where(test, tbl) {
+		test = evcond(test)
+		const acc = []
+		for(const row of tbl)
+			if(test(row))
+				acc.push(row)
+		return acc
+	}
+	function order(orderfn, tbl) {
+		orderfn = evord(orderfn)
+		return orderfn(tbl)
+	}
+	function evcond(cond) {
+		cond = cond.trim()
+		cond = cond.replace(/or/gi, '||')
+		cond = cond.replace(/and/gi, '&&')
+		cond = cond.replace(/(\w+)\s*!=\s*/gi, 'r["$1"]!==')
+		cond = cond.replace(/(\w+)\s*=\s*/gi, 'r["$1"]===')
+		return r => eval(cond)
+	}
+	function evord(ord) {
+		ord = ord.split(/\s*,\s*/).map(o => o.split(/\s+/))
+		return rows => {
+			for(let i = ord.length - 1; i > -1; i--)
+				rows = sort(rows, ord[i])
+			return rows
+		}
+	}
+	function sort(rows, ord) {
+		if(ord.length == 1) /* ASC */
+			return _sort(rows, ord[0], (a,b) => a > b)
+		else if(ord.length == 2) {
+			const order = san_ord(ord[1])
+			if(order == 'asc')
+				return _sort(rows, ord[0], (a,b) => a > b)
+			else if(order == 'desc')
+				return _sort(rows, ord[0], (a,b) => a < b)
+		}
+		return rows
+	}
+
+	/* Other Tools */
+	function _sort(A, col, compfn) {
+		function swap(A, i, j) {
+			const t = A[i]
+			A[i] = A[j]
+			A[j] = t
+		}
+		for(let i = 0; i < A.length; i++)
+			for(let j = i + 1; j < A.length; j++)
+				if(compfn(A[i][col], A[j][col]))
+					swap(A, i, j)
+		return A
+	}
+	function remove_empty_members(arr) {
+		let acc = []
+		for(const o of arr)
+			if(o) acc.push(o)
+		return acc
+	}
+	function indexes(tbl, cond) {
+		let acc = []
+		for(const i in tbl)
+			if(cond(tbl[i]))
+				acc.push(i)
+		return acc
+	}
+	function get_table(tbl) {
+		return db[san_table(tbl)]
+	}
+	function extract_cols(tbl) {
+		let cols = []
+		for(const k in tbl[0])
+			cols.push(k)
+		return cols
+	}
+
+	/* Main */
+	function ev(str) {
+		const st = remove_empty_members(statements(san_str(str))).map(
+			t => pattern_matcher(t))
+		return st[st.length - 1]
+	}
+
+	/* Run */
 	return [ev(str), db]
 }
 
