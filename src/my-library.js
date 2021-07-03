@@ -1434,9 +1434,30 @@ function random_search(A, x) {
 	}
 }
 
+function binary_search(A, x, s=0, e=A.length-1) {
+	if(s <= e) {
+		const m = Math.floor(s + (e - s) / 2)
+		if(x < A[m])
+			return binary_search(A, x, s, m - 1)
+		if(x > A[m])
+			return binary_search(A, x, m + 1, e)
+		return m
+	}
+}
+
 function iota(N) {
 	const A = []
 	for(let i = 0; i < N; i++)
 		A.push(i)
 	return A
+}
+
+function is_sorted(A, f=(a,b)=>a<=b) {
+	let start = A[0]
+	for(let i = 1; i < A.length; i++) {
+		if(!f(start, A[i]))
+			return false
+		start = A[i]
+	}
+	return true
 }
