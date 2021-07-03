@@ -1298,7 +1298,7 @@ function sql(str) {
 		return set.trim().split(/\s*,\s*/).map(t => t.split(/\s*=\s*/))
 	}
 	function statements(str) {
-		return str.split(/\s*;\s*/)
+		return remove_empty_members(str.split(/\s*;\s*/))
 	}
 
 	/* Mechanisms */
@@ -1410,8 +1410,7 @@ function sql(str) {
 
 	/* Main */
 	function ev(str) {
-		const st = remove_empty_members(statements(san_str(str))).map(
-			t => pattern_matcher(t))
+		const st = statements(san_str(str)).map(t => pattern_matcher(t))
 		return st[st.length - 1]
 	}
 
