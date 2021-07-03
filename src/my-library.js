@@ -1425,12 +1425,12 @@ function search(A, x) {
 }
 
 function random_search(A, x) {
-	const acc = new Map()
-	while(acc.size != A.length) {
-		const idx = Math.floor(Math.random() * A.length)
-		if(A[idx] == x)
-			return idx
-		acc.set(idx, true)
+	const S = new Set()
+	while(S.size != A.length) {
+		const I = Math.floor(Math.random() * A.length)
+		if(A[I] == x)
+			return I
+		S.add(I)
 	}
 }
 
