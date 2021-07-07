@@ -27,6 +27,7 @@ const my_library_functions = [
 	'continuous_data_number_of_classes(data)',
 	'count_elements(data)',
 	'count_lines(str)',
+	'count_sort(A)',
 	'data_classes(data)',
 	'data_cumulative_frequency(data)',
 	'data_frequency(data)',

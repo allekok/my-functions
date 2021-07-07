@@ -1203,6 +1203,19 @@ function sort(A) {
 	return A
 }
 
+function count_sort(A) {
+	const B = {}
+	for(const a of A)
+		B[a] = a in B ? B[a] + 1 : 1
+	
+	const C = []
+	for(const i in B)
+		while(B[i]--)
+			C.push(i)
+	
+	return C
+}
+
 function sql(str) {
 	const db = { }
 
