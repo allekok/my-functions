@@ -117,6 +117,7 @@ const my_library_functions = [
 	'permutations(A, N=A.length, R=\'\', join=(A,a)=>A+a)',
 	'prime_factors(n)',
 	'product(arr, f=n=>n)',
+	'quick_sort(A, s=0, e=A.length-1)',
 	'random_search(A, x)',
 	'remove_similar_elements(arr)',
 	'reverse_string(str)',

@@ -1216,6 +1216,29 @@ function count_sort(A) {
 	return C
 }
 
+function quick_sort(A, s=0, e=A.length-1) {
+	function swap(A, i, j) {
+		const t = A[i]
+		A[i] = A[j]
+		A[j] = t
+	}
+	function partition(A, s, e) {
+		const p = A[e]
+		let i = s - 1
+		for(let j = s; j < e; j++)
+			if(A[j] < p)
+				swap(A, ++i, j)
+		swap(A, i + 1, e)
+		return i + 1
+	}
+	if(s < e) {
+		const p = partition(A, s, e)
+		quick_sort(A, s, p - 1)
+		quick_sort(A, p + 1, e)
+	}
+	return A
+}
+
 function sql(str) {
 	const db = { }
 
