@@ -1497,3 +1497,40 @@ function is_sorted(A, f=(a,b)=>a<=b) {
 	}
 	return true
 }
+
+function random_list(n, f) {
+	let A = []
+	for(let i = 0; i < n; i++)
+		A.push(f())
+	return A
+}
+
+function random_int(min, max) {
+	return Math.round(Math.random() * (max - min)) + min
+}
+
+function random_int_list(n, min=0, max=10) {
+	return random_list(n, () => random_int(min, max))
+}
+
+function random_char(min, max) {
+	min = min.charCodeAt(0)
+	max = max.charCodeAt(0)
+	return String.fromCharCode(random_int(min, max))
+}
+
+function random_char_list(n, min='A', max='Z') {
+	return random_list(n, () => random_char(min, max))
+}
+
+function random_str(len, min, max) {
+	let S = ''
+	for(let i = 0; i < len; i++)
+		S += random_char(min, max)
+	return S
+}
+
+function random_str_list(n, min=1, max=10, char_min='A', char_max='Z') {
+	return random_list(
+		n, () => random_str(random_int(min, max), char_min, char_max))
+}
