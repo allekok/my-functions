@@ -32,8 +32,8 @@
 			 height:100%;
 			 font-family:"DroidNaskhRegular","SourceCodePro",
 			 monospace;
-			 font-size:15px;
-			 line-height:1.4;
+			 font-size:14.5px;
+			 line-height:1.55;
 		 }
 		 i {
 			 font-style:normal;
@@ -54,7 +54,10 @@
 		 #result p {
 			 margin:0;
 			 padding:.5rem;
-			 border-top:1px solid
+			 border-top:1px solid;
+		 }
+		 #result p:nth-child(1) {
+			 border-top:0;
 		 }
 		 input, textarea {
 			 -webkit-appearance:none;
@@ -71,19 +74,17 @@
 		 }
 		 #input {
 			 border:0;
-			 border-top:1px solid;
+			 border-top:2px solid;
 			 width:100%;
 			 height:100%;
 		 }
 		 #input:focus {
-			 border:0;
 			 box-shadow:none;
-			 border-top:2px solid;
 		 }
 		 #inputDiv {
 			 display:flex;
 			 width:100%;
-			 height:20%;
+			 height:12%;
 		 }
 		 button {
 			 -webkit-appearance:none;
@@ -103,10 +104,10 @@
 			 display:flex;
 			 flex-direction:column;
 			 font-family:"MaterialIcons";
-			 font-size:2rem;
+			 font-size:1.5rem;
 			 width:100%;
-			 max-width:4rem;
-			 min-width:4rem;
+			 max-width:3rem;
+			 min-width:3rem;
 		 }
 		 .rtl {
 			 display:inline-block;
@@ -147,12 +148,9 @@
 		 }
 		 .func_form input[type=text] {
 			 border:0;
-			 border-bottom:1px solid;
+			 border-bottom:2px solid;
 			 width:100%;
 			 margin-bottom:1rem;
-		 }
-		 .func_form input[type=text]:focus {
-			 border-bottom:2px solid;
 		 }
 		 .func_form button[type=submit] {
 			 font-family:"MaterialIcons";
@@ -212,8 +210,8 @@
 		 const ffBtn = document.querySelector('#ffBtn')
 		 const clrBtn = document.querySelector('#clrBtn')
 		 const themes = [
-			 ['light', ['#fff','#000','#00e','#e00']],
-			 ['dark',  ['#000','#fff','#5f5','#e55']],
+			 ['light', ['#fff','#000','#00e','#e00','#ddd']],
+			 ['dark',  ['#000','#fff','#5f5','#e55','#333']],
 		 ]
 		 let current_theme = 0
 		 let current_input_height = 20
@@ -333,11 +331,11 @@
 		 function clear() {
 			 let i = 0
 			 result.innerHTML = ''
-			 append_to_result('\n[Ctrl <i class="icon c">subdirectory_arrow_left</i>]: Execution\n[Ctrl <i class="icon c">arrow_upward</i>]: Going backward in history\n[Ctrl <i class="icon c">arrow_downward</i>]: Going foreward in history\n[Alt <i class="icon c">arrow_upward</i>]: Grow input\n[Alt <i class="icon c">arrow_downward</i>]: Shrink input\n[Alt <i class="c">T</i>]: Toggle theme\n[Alt <i class="c">S</i>]: Search in functions\n[Alt <i class="c">C</i>]: Clear screen\n[Alt <i class="c">\\</i>]: Function -> Form')
-			 append_to_result(`Functions[${my_library_functions.length}]:\n` +
+			 append_to_result('\nCtrl <i class="icon c">subdirectory_arrow_left</i>\tExecution\nCtrl <i class="icon c">arrow_upward</i>\tGoing backward in history\nCtrl <i class="icon c">arrow_downward</i>\tGoing foreward in history\nAlt <i class="icon c">arrow_upward</i>\tGrow input\nAlt <i class="icon c">arrow_downward</i>\tShrink input\nAlt <i class="c">T</i>\tToggle theme\nAlt <i class="c">S</i>\tSearch in functions\nAlt <i class="c">C</i>\tClear screen\nAlt <i class="c">\\</i>\tFunction -> Form')
+			 append_to_result(`Functions (${my_library_functions.length}) :\n` +
 					  my_library_functions.map(o => {
 						  const n = o.match(/([^\(\s]+)/)[1]
-						  return `|${i++}| <button type='button' class='func_btn' 
+						  return `${i++} <button type='button' class='func_btn' 
 						  onclick='func_form(${n})'>${o}</button>`
 					  }).join('\n'))
 			 result.scrollTo(0,0)
@@ -348,7 +346,7 @@
 		 }
 		 function append_to_result(str) {
 			 const p = document.createElement("P")
-			 p.innerHTML = `[${nth}] ${str}`
+			 p.innerHTML = `<i class='c'>${nth}</i> ${str}`
 			 result.appendChild(p)
 			 result.scrollTo(0, result.scrollHeight)
 			 nth++
@@ -363,7 +361,9 @@
 			 ::selection { background: ${theme[2]}; color: ${theme[0]} }
 			 ::-webkit-scrollbar-track { background: ${theme[0]} }
 			 ::-webkit-scrollbar-thumb { background: ${theme[2]} }
-			 .func_btn { color: ${theme[1]} }`
+			 .func_btn { color: ${theme[1]} }
+			 #result p, #input, .func_form input[type=text] { border-color: ${theme[4]} }
+			 #input:focus,.func_form input[type=text]:focus{ border-color: ${theme[1]} }`
 		 }
 		 function save_current_theme() {
 			 localStorage.setItem('theme', current_theme)
@@ -385,13 +385,13 @@
 				 input.value = history[--history_pointer]
 		 }
 		 function grow_input() {
-			 current_input_height += 40
+			 current_input_height += 10
 			 inputDiv.style.height = current_input_height + '%'
 		 }
 		 function shrink_input() {
-			 current_input_height -= 40
-			 if(current_input_height < 20)
-				 current_input_height = 20
+			 current_input_height -= 10
+			 if(current_input_height < 12)
+				 current_input_height = 12
 			 inputDiv.style.height = current_input_height + '%'
 		 }
 		 function get_func_prototype(proc) {
