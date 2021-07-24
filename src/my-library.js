@@ -724,11 +724,9 @@ function lisp(str) {
 			return atom(token)
 	}
 	function atom(token) {
-		if(token === '0')
-			return 0
-		else if(Number(token))
-			return Number(token)
-		return token
+		if(isNaN(Number(token)))
+			return token
+		return Number(token)
 	}
 
 	/* Evaluation */
@@ -1135,10 +1133,9 @@ function translate_numbers(S) {
 
 function asm(str) {
 	/* Functions */
-	const lines = str => str.trim().split(/\n+/)
-	const tokenize = lns => lns.map(l => l.trim().split(/\s+|,/).filter(o=>o))
-	const parse = str => tokenize(lines(str))
-	const ev = x => (x === '0' || Number(x)) ? Number(x) : e[x]
+	const parse = str => str.trim().split(/\n+/).map(
+		ln => ln.trim().split(/\s+|,/).filter(o => o))
+	const ev = x => isNaN(Number(x)) ? e[x] : Number(x)
 	const run = st => f[st[0]](...st.slice(1))
 	
 	/* Run */
@@ -1151,18 +1148,17 @@ function asm(str) {
 		mul: (d,s) => e[d] = ev(d)*ev(s),
 		cmp: (d,s) => e[flag] = ev(d)-ev(s),
 		jmp: n => ip = ev(n) - 1,
-		jt: (n,t) => t ? f['jmp'](n) : null,
-		je: n => f['jt'](n, !ev(flag)),
-		jg: n => f['jt'](n, ev(flag) > 0),
-		jl: n => f['jt'](n, ev(flag) < 0),
-		jge: n => f['jt'](n, ev(flag) >= 0),
-		jle: n => f['jt'](n, ev(flag) <= 0),
-		jne: n => f['jt'](n, ev(flag)),
+		jt: (n,t) => t ? f.jmp(n) : null,
+		je: n => f.jt(n, !ev(flag)),
+		jg: n => f.jt(n, ev(flag) > 0),
+		jl: n => f.jt(n, ev(flag) < 0),
+		jge: n => f.jt(n, ev(flag) >= 0),
+		jle: n => f.jt(n, ev(flag) <= 0),
+		jne: n => f.jt(n, ev(flag)),
 	}
 	const e = {}
-	let ip = 0
 	const statements = parse(str)
-	for(; ip < statements.length; ip++)
+	for(let ip = 0; ip < statements.length; ip++)
 		run(statements[ip])
 	return e
 }
