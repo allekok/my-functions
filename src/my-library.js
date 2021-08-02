@@ -1530,3 +1530,12 @@ function random_str_list(n, min=1, max=10, char_min='A', char_max='Z') {
 	return random_list(
 		n, () => random_str(random_int(min, max), char_min, char_max))
 }
+
+function gcd(m, n) {
+	const r = m % n
+	return r ? gcd(n, r) : n
+}
+
+function fib(n) {
+	return n > 2 ? fib(n - 1) + fib(n - 2) : 1
+}
