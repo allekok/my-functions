@@ -916,6 +916,15 @@ function tewar(w, n=25, dicts='all', out='text') {
 			 t => append_to_result(rtl(to_string(t))))
 }
 
+function hackernews() {
+	return my_server('hackernews', '', links => {
+		let html = ''
+		for(const link of links)
+			html += `<a href='${link[1]}'>${link[0]}</a>\n`
+		append_to_result(html)
+	})
+}
+
 function count_lines(str) {
 	if(str.length == 0)
 		return 0

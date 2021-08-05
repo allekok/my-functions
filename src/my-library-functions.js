@@ -54,6 +54,7 @@ const my_library_functions = [
 	'fib(n)',
 	'func_range(proc, domain)',
 	'gcd(m, n)',
+	'hackernews()',
 	'hexadecimal_to_binary(hex)',
 	'hexadecimal_to_decimal(hex)',
 	'hexadecimal_to_octal(hex)',
