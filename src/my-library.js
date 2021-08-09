@@ -1550,3 +1550,14 @@ function fib(n, A=[0, 1]) {
 		A[n] = fib(n - 1, A) + fib(n - 2, A)
 	return A[n]
 }
+
+function remainder(m, n) {
+	if(m < n)
+		return m
+	return remainder(m - n, n)
+}
+
+function modulo(m, n) {
+	const r = m % n
+	return (n ^ r) >> 31 ? r + y : r
+}
