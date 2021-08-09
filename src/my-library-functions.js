@@ -51,7 +51,7 @@ const my_library_functions = [
 	'factors(n, proc=n=>true, limit=null)',
 	'false_gate(a, b)',
 	'false_true_gate(a, b)',
-	'fib(n)',
+	'fib(n, A=[0, 1])',
 	'func_range(proc, domain)',
 	'gcd(m, n)',
 	'hackernews()',

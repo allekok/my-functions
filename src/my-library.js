@@ -1545,6 +1545,8 @@ function gcd(m, n) {
 	return r ? gcd(n, r) : n
 }
 
-function fib(n) {
-	return n > 2 ? fib(n - 1) + fib(n - 2) : 1
+function fib(n, A=[0, 1]) {
+	if(A[n] === undefined)
+		A[n] = fib(n - 1, A) + fib(n - 2, A)
+	return A[n]
 }
