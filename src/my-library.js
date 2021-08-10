@@ -1559,5 +1559,5 @@ function remainder(m, n) {
 
 function modulo(m, n) {
 	const r = m % n
-	return (n ^ r) >> 31 ? r + y : r
+	return n * r < 0 ? r + n : r
 }
