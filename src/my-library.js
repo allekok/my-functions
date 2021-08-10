@@ -1173,8 +1173,6 @@ function asm(str) {
 }
 
 function equal(x, y) {
-	if(!is_object(x) && !is_object(y))
-		return x == y
 	if(is_object(x) && is_object(y)) {
 		for(const i in x) {
 			if(i in y) {
@@ -1192,7 +1190,7 @@ function equal(x, y) {
 		}
 		return true
 	}
-	return false
+	return x == y || (isNaN(x) && isNaN(y))
 }
 
 function sort(A) {
