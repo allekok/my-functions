@@ -742,6 +742,8 @@ function lisp(str) {
 				return define(exp, env)
 			else if(exp[0] == 'lambda')
 				return make_proc(exp[1], exp[2], env)
+			else if(exp[0] == 'begin')
+				return begin(exp, env)
 			else if(exp[0] == 'if')
 				exp = exp[_eval(exp[1], env) ? 2 : 3]
 			else {
@@ -766,6 +768,10 @@ function lisp(str) {
 				   env)
 		}
 		return set(exp[1], _eval(exp[2], env), env)
+	}
+	function begin(exp, env) {
+		exp = exp.map(x => _eval(x, env))
+		return exp[exp.length - 1]
 	}
 
 	/* Environment */
@@ -850,9 +856,6 @@ function lisp(str) {
 	function js(arg) {
 		return eval(arg.join(' '))
 	}
-	function begin(arg) {
-		return arg[arg.length - 1]
-	}
 
 	/* Print */
 	function _print(x) {
@@ -860,8 +863,8 @@ function lisp(str) {
 	}
 
 	/* Run */
-	let envs = []
-	const global_env = make_env({ js: js, begin: begin }, undefined)
+	const envs = []
+	const global_env = make_env({ js }, undefined)
 	return _eval(parse(str), global_env)
 }
 
@@ -1557,5 +1560,5 @@ function remainder(m, n) {
 
 function modulo(m, n) {
 	const r = m % n
-	return n * r < 0 ? r + n : r
+	return r * n < 0 ? r + n : r
 }
