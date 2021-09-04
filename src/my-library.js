@@ -1562,3 +1562,74 @@ function modulo(m, n) {
 	const r = m % n
 	return r * n < 0 ? r + n : r
 }
+
+function make_rat(n, d) {
+	const g = gcd(n, d)
+	return [n / g, d / g]
+}
+
+function simplify_rat(r) {
+	const g = gcd(rat_num(r), rat_div(r))
+	return make_rat(rat_num(r) / g,
+			rat_div(r) / g)
+}
+
+function rat_num(r) {
+	return r[0]
+}
+
+function rat_div(r) {
+	return r[1]
+}
+
+function inverse_rat(r) {
+	return make_rat(rat_div(r), rat_num(r))
+}
+
+function neg_rat(r) {
+	return product_rats(r, make_rat(-1, 1))
+}
+
+function add_rats(r, u) {
+	return simplify_rat(make_rat(
+		rat_num(r) * rat_div(u) + rat_num(u) * rat_div(r),
+		rat_div(r) * rat_div(u)))
+}
+
+function subtract_rats(r, u) {
+	return add_rats(r, neg_rat(u))
+}
+
+function product_rats(r, u) {
+	return simplify_rat(make_rat(
+		rat_num(r) * rat_num(u),
+		rat_div(r) * rat_div(u)))
+}
+
+function divide_rats(r, u) {
+	return product_rats(r, inverse_rat(u))
+}
+
+function abs(n) {
+	return n < 0 ? -n : n
+}
+
+function reach(i, pred, improve) {
+	for(;;) {
+		if(pred(i))
+			return i
+		i = improve(i)
+	}
+}
+
+function sqrt(n, i=0, e=1e-3) {
+	return reach(i,
+		     i => abs(n - i * i) < e,
+		     i => n > i * i ? i + e * e : i - e * e)
+}
+
+function sqrt_2(n, i=1, e=1e-10) {
+	return reach(i,
+		     i => abs(n - i * i) < e,
+		     i => (n / i + i) / 2)
+}
