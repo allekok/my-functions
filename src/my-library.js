@@ -724,9 +724,7 @@ function lisp(str) {
 			return atom(token)
 	}
 	function atom(token) {
-		if(isNaN(Number(token)))
-			return token
-		return Number(token)
+		return isNaN(token) ? token : Number(token)
 	}
 
 	/* Evaluation */
@@ -1147,13 +1145,14 @@ function asm(str) {
 	/* Functions */
 	const parse = str => str.trim().split(/\n+/).map(
 		ln => ln.trim().split(/\s+|,/).filter(o => o))
-	const ev = x => isNaN(Number(x)) ? e[x] : Number(x)
+	const ev = x => isNaN(x) ? e[x] : Number(x)
 	const run = st => f[st[0]](...st.slice(1))
 	
 	/* Run */
 	const flag = 'flag'
 	const f = {
 		nop: () => null,
+		hlt: () => ip = -1,
 		mov: (d,s) => e[d] = ev(s),
 		add: (d,s) => e[d] = ev(d)+ev(s),
 		sub: (d,s) => e[d] = ev(d)-ev(s),
@@ -1170,7 +1169,7 @@ function asm(str) {
 	}
 	const e = {}
 	const statements = parse(str)
-	for(let ip = 0; ip < statements.length; ip++)
+	for(let ip = 0; ip > -1 && ip < statements.length; ip++)
 		run(statements[ip])
 	return e
 }
@@ -1478,7 +1477,7 @@ function random_search(A, x) {
 
 function binary_search(A, x, s=0, e=A.length-1) {
 	if(s <= e) {
-		const m = Math.floor(s + (e - s) / 2)
+		const m = Math.floor((s + e) / 2)
 		if(x < A[m])
 			return binary_search(A, x, s, m - 1)
 		if(x > A[m])
