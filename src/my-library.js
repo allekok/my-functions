@@ -1563,14 +1563,12 @@ function modulo(m, n) {
 }
 
 function make_rat(n, d) {
-	const g = gcd(n, d)
-	return [n / g, d / g]
+	return simplify_rat([n, d])
 }
 
 function simplify_rat(r) {
 	const g = gcd(rat_num(r), rat_div(r))
-	return make_rat(rat_num(r) / g,
-			rat_div(r) / g)
+	return [rat_num(r) / g,	rat_div(r) / g]
 }
 
 function rat_num(r) {
@@ -1590,9 +1588,9 @@ function neg_rat(r) {
 }
 
 function add_rats(r, u) {
-	return simplify_rat(make_rat(
+	return make_rat(
 		rat_num(r) * rat_div(u) + rat_num(u) * rat_div(r),
-		rat_div(r) * rat_div(u)))
+		rat_div(r) * rat_div(u))
 }
 
 function subtract_rats(r, u) {
@@ -1600,9 +1598,9 @@ function subtract_rats(r, u) {
 }
 
 function product_rats(r, u) {
-	return simplify_rat(make_rat(
+	return make_rat(
 		rat_num(r) * rat_num(u),
-		rat_div(r) * rat_div(u)))
+		rat_div(r) * rat_div(u))
 }
 
 function divide_rats(r, u) {
