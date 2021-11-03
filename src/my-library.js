@@ -1612,11 +1612,9 @@ function abs(n) {
 }
 
 function reach(i, pred, improve) {
-	for(;;) {
+	for( ; ; i = improve(i))
 		if(pred(i))
 			return i
-		i = improve(i)
-	}
 }
 
 function sqrt(n, i=0, e=1e-3) {
