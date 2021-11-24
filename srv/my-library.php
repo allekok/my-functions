@@ -68,7 +68,7 @@ function hackernews() {
 	$url = "https://news.ycombinator.com/";
 	$html = download($url);
 	$dom = parse_html($html);
-	$links = get_elements_by_class($dom, "storylink");
+	$links = get_elements_by_class($dom, "titlelink");
 	foreach($links as $i => $link) {
 		$links[$i] = [$link->nodeValue,
 			      $link->getAttribute("href")];
