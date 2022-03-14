@@ -1631,3 +1631,22 @@ function sqrt_2(n, i=1, e=1e-10) {
 		     i => abs(n - i * i) < e,
 		     i => (n / i + i) / 2)
 }
+
+function call_with_random_args(f, min=0, max=10) {
+	return f(...random_int_list(f.length, min, max))
+}
+
+function loop(f, n) {
+	const R = []
+	while(n--)
+		R.push(f())
+	return R
+}
+
+function stack_machine() {
+	const S = []
+	const push = x => {S.push(x); return x}
+	const pop = () => S.pop()
+	const plus = () => push(pop() + pop())
+	return {S, push, pop, plus}
+}
