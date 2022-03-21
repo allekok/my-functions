@@ -181,13 +181,13 @@ function series_resistors_equivalent(resistors) {
 }
 
 function extend_left_by_character_n_times(str, char, n) {
-	while(n-- > str.length)
+	while(n > str.length)
 		str = char + str
 	return str
 }
 
 function decimal_to_bcd(num, num_of_bits=8) {
-	num = String(parseInt(num))
+	num = String(num)
 	let bin = ''
 	for(let i = 0; num[i] !== undefined; i++)
 		bin += extend_left_by_character_n_times(
