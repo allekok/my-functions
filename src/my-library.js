@@ -1650,3 +1650,26 @@ function stack_machine() {
 	const plus = () => push(pop() + pop())
 	return {S, push, pop, plus}
 }
+
+function make_flower(n=5, back='yellow', petal=_ => 'blue', w=50, h=50, parent='#result p:last-child', ratio=1.5, style='') {
+	const el = document.createElement('div')
+	const w_m = w / ratio
+	const h_m = h / ratio
+	const petals = []
+
+	el.style = (`width:${w}px; height:${h}px;` +
+		    `border-radius:50%; background:${back};` +
+		    `margin:${h_m}px auto;` +
+		    style)
+
+	for(let i = 0; i < n; i++) {
+		const theta = 2 * Math.PI * i / n
+		const x = Math.round(Math.sin(theta) * h_m)
+		const y = Math.round(Math.cos(theta) * w_m)
+		petals.push(`${x}px ${y}px 0 ${petal(i)}`)
+	}
+
+	el.style.boxShadow = petals.join(', ')
+	append_to_result('Flower: ')
+	document.querySelector(parent).appendChild(el)
+}

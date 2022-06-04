@@ -90,6 +90,7 @@ const my_library_functions = [
 	'logic_lang(str)',
 	'longest_array(arr)',
 	'loop(f, n)',
+	'make_flower(n=5, back=\'yellow\', petal=_ => \'blue\', w=50, h=50, parent=\'#result p:last-child\', ratio=1.5, style=\'\')',
 	'make_matrix(rows, columns, proc)',
 	'make_rat(n, d)',
 	'make_stream(init, proc)',
